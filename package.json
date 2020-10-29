@@ -1,0 +1,35 @@
+{
+  "name": "evo-rentals",
+  "version": "1.0.0",
+  "description": "server for evo-rentals",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "server": "nodemon node_api/server.js",
+    "client": "npm start --prefix react-client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "seed": "node node_api/developDB/cleanDB.js"
+  },
+  "keywords": [
+    "Node",
+    "API",
+    "(evo-rentals",
+    "prodect)"
+  ],
+  "author": "Ilya Petrov",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "colors": "^1.4.0",
+    "concurrently": "^5.3.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.11",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.6"
+  }
+}
