@@ -11,6 +11,10 @@ dotenv.config();
 connectDB();
 const app = express();
 
+// models
+import { Rental } from './models/rentalModel.js';
+import { User } from './models/userModel.js';
+
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
