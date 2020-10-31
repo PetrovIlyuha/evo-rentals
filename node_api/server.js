@@ -14,9 +14,17 @@ const app = express();
 // models
 import { Rental } from './models/rentalModel.js';
 import { User } from './models/userModel.js';
+// middlewares
+import { authUserMiddleware } from './middleware/authUserMiddleware.js';
 
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+
+app.get('/api/v1/authorized', authUserMiddleware, (req, res) => {
+  const user = res.locals.user;
+  console.log(user);
+  res.send('You are viewing secret page. Lucky bastard!');
+});
 
 // routes
 app.use('/api/v1/', rentalsRoutes);
