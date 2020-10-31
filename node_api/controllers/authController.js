@@ -1,4 +1,5 @@
 import { User } from '../models/userModel.js';
+import jwt from 'jsonwebtoken';
 
 const loginUser = (req, res) => {
   const { email, password } = req.body;
@@ -36,7 +37,12 @@ const loginUser = (req, res) => {
       });
     }
     if (foundUser.passwordsMatch(password)) {
-      res.json({ token: 'token super token JWT is super', user: foundUser });
+      const token = jwt.sign(
+        { userId: foundUser._id, username: foundUser.username },
+        process.env.JWT_SECRET,
+        { expiresIn: '3h' },
+      );
+      return res.json(token);
     } else {
       return res.status(422).send({
         errors: [
