@@ -40,7 +40,7 @@ const loginUser = (req, res) => {
       const token = jwt.sign(
         { userId: foundUser._id, username: foundUser.username },
         process.env.JWT_SECRET,
-        { expiresIn: '3h' },
+        { expiresIn: '1w' },
       );
       return res.json(token);
     } else {
