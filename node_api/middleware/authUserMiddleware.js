@@ -4,8 +4,8 @@ import { User } from '../models/userModel.js';
 export const authUserMiddleware = (req, res, next) => {
   const token = req.headers.authorization;
   if (token) {
-    const decodedToken = parseToken(token);
-    if (!decodedToken) {
+    const { decodedToken, error } = parseToken(token);
+    if (error) {
       return notAuthorized(res);
     }
     User.findById(decodedToken.userId, (error, authorizedUser) => {
@@ -32,7 +32,15 @@ export const authUserMiddleware = (req, res, next) => {
 };
 
 function parseToken(token) {
-  return jwt.verify(token.split(' ')[1], process.env.JWT_SECRET) || null;
+  try {
+    const decodedToken = jwt.verify(
+      token.split(' ')[1],
+      process.env.JWT_SECRET,
+    );
+    return { decodedToken };
+  } catch (err) {
+    return { error: err.message };
+  }
 }
 
 function notAuthorized(res) {
