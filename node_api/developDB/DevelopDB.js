@@ -1,18 +1,22 @@
 import { Rental } from '../models/rentalModel.js';
+import { User } from '../models/userModel.js';
 import { rentals } from './rentalsMockData.js';
+import { users } from './usersMockData.js';
 
 class DevelopDB {
   async clean() {
-    return await Rental.deleteMany({});
+    await Rental.deleteMany({});
+    await User.deleteMany({});
   }
 
   async populate() {
-    return await Rental.create(rentals);
+    await Rental.create(rentals);
+    await User.create(users);
   }
 
-  seedDataToDB() {
-    this.clean();
-    this.populate();
+  async seedDataToDB() {
+    await this.clean();
+    await this.populate();
   }
 }
 

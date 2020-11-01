@@ -37,26 +37,45 @@ export const rentals = [
     Wi-Fi is free in all parts of the Izmailovo Alfa Hotel.`,
   },
   {
-    title: 'Modern-looking flat',
+    title: 'Apartment',
     city: 'Moscow',
-    street: 'Tverskaya',
-    category: 'apartment',
-    numOfRooms: 1,
-    numOfGuests: 7,
+    street: 'Noviy Arbat',
+    category: 'flat',
+    numOfRooms: 4,
+    numOfGuests: 8,
     numOfBeds: 4,
     shared: false,
-    street: 'Sunny Vale Street',
-    image:
-      'https://a0.muscache.com/im/pictures/14fa236e-6d43-48fd-8024-700b316dc47e.jpg?im_w=1200',
-    image2:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRWz3txLEVUu2_H7YcHJhkSymc7VIRsNAsg-w&usqp=CAU',
-    dailyPrice: 40,
-    description: `Welcome to the mini-apartments "New York"! This is a modern compact housing of 14 square meters, located in a new business class residential complex on the banks of the Nagatinsky backwater. Picturesque embankments, the Kolomenskoye Museum-Reserve and the Dream Island theme park`,
+    street: 'Noviy Arbat Street, 12',
+    image: 'https://cf.bstatic.com/images/hotel/max1024x768/314/31406950.jpg',
+    image2: 'https://cf.bstatic.com/images/hotel/max1024x768/177/177794704.jpg',
+    dailyPrice: 30,
+    description: `Heating
+    Stay in the heart of Moscow – Excellent location – show map
+     One of our top picks in Moscow.
+    Located in the center of Moscow, a 10-minute walk to Arbatskaya Metro Station, Nice Flats Noviy Arbat offer comfortable self-catering accommodations with free Wi-Fi.
+
+    The air-conditioned apartments feature modern design and furnishings. They come with a bath or shower. The living room has a sofa and flat-screen TV. The equipped kitchen comes with a fridge, an stove and an electric kettle. There is a washing machine in the apartments.`,
   },
   {
-    title: 'Spacious Apartment',
-    city: 'St-Petersburg',
-    street: 'Groznyi Boulevard',
+    title: 'Apartment',
+    city: 'Moscow',
+    street: 'Kievskaya Ulitsa, 2',
+    category: 'apartment',
+    numOfRooms: 1,
+    numOfGuests: 2,
+    numOfBeds: 1,
+    shared: false,
+    image: 'https://cf.bstatic.com/images/hotel/max1024x768/251/251956880.jpg',
+    image2: 'https://cf.bstatic.com/images/hotel/max1024x768/102/102608750.jpg',
+    dailyPrice: 45,
+    description: `Located opposite Kievsky Train Station in Moscow, providing direct connections to Vnukovo International Airport, this apartment building features a swimming pool, sauna and hammam.
+    The comfortable rooms are air conditioned and have a private bathroom with free toiletries.
+    Guests can enjoy the Gourmet Bar near the location. A fitness center  is available for active guests nearby. Evropeysky Shopping Center is steps away.`,
+  },
+  {
+    title: 'Apartment',
+    city: 'Moscow',
+    street: 'Nizhegorodskaya, 122',
     category: 'apartment',
     numOfRooms: 2,
     numOfGuests: 4,
