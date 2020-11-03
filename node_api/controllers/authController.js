@@ -61,11 +61,7 @@ const registerNewUser = (req, res) => {
   const { username, email, password, passwordConfirmation } = req.body;
 
   if (!password || !email) {
-    return res.status(422).send({
-      errors: [
-        { title: 'Missing Data!', detail: 'Email or password is missing!' },
-      ],
-    });
+    return res.status(401).send({ message: 'Email or password is missing' });
   }
   if (password !== passwordConfirmation) {
     return res.status(422).send({
@@ -86,14 +82,9 @@ const registerNewUser = (req, res) => {
       });
     }
     if (existingUser) {
-      return res.status(422).send({
-        errors: [
-          {
-            title: 'Email is taken',
-            detail: 'User with provided email already exists!',
-          },
-        ],
-      });
+      return res
+        .status(422)
+        .json({ message: 'Seem like you have been our user already!' });
     }
     const user = new User({ username, email, password });
     user.save((err, user) => {
