@@ -7,6 +7,7 @@ import RentalsHome from './pages/rentals/RentalsHome';
 import LoginPage from './pages/user/LoginPage';
 import RegisterPage from './pages/user/RegisterPage';
 import RentalDetails from './pages/rentals/RentalDetails';
+import AdminPage from './pages/admin/AdminPage';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path='/rental/:id' exact component={RentalDetails} />
           <Route path='/login' component={LoginPage} />
           <Route path='/register' component={RegisterPage} />
+          <Route path='/admin' component={AdminPage} />
         </Switch>
       </Router>
     </ThemeProvider>
