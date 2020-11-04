@@ -9,17 +9,21 @@ import RegisterPage from './pages/user/RegisterPage';
 import RentalDetails from './pages/rentals/RentalDetails';
 import AdminPage from './pages/admin/AdminPage';
 
+import { MapProvider } from './context/MapProvider';
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <Header />
         <Switch>
-          <Route path='/' exact component={RentalsHome} />
-          <Route path='/rental/:id' exact component={RentalDetails} />
-          <Route path='/login' component={LoginPage} />
-          <Route path='/register' component={RegisterPage} />
-          <Route path='/admin' component={AdminPage} />
+          <MapProvider apiKey='ZrkLqCmGAAT4fyCb2Dtni5XaMGosvHY2'>
+            <Route path='/' exact component={RentalsHome} />
+            <Route path='/rental/:id' exact component={RentalDetails} />
+            <Route path='/login' component={LoginPage} />
+            <Route path='/register' component={RegisterPage} />
+            <Route path='/admin' component={AdminPage} />
+          </MapProvider>
         </Switch>
       </Router>
     </ThemeProvider>
