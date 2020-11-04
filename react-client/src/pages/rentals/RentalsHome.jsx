@@ -10,14 +10,11 @@ import RentalCard from './RentalCard';
 import { listAllRentals } from '../../redux/rentals_slice/rentalActions';
 import Loading from '../../components/ui_layout/Loading';
 
-const useStyles = makeStyles(theme => ({}));
-const RentalsHome = () => {
-  const classes = useStyles();
+// const useStyles = makeStyles(theme => ({}));
+const RentalsHome = ({ history }) => {
+  // const classes = useStyles();
   const dispatch = useDispatch();
-
-  const { rentals: allRentals, error, loading } = useSelector(
-    state => state.rentals,
-  );
+  const { rentals: allRentals, loading } = useSelector(state => state.rentals);
 
   useEffect(() => {
     dispatch(listAllRentals());
