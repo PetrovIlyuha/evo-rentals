@@ -1,6 +1,14 @@
 import React, { useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import cogoToast from 'cogo-toast';
+
+// cogo usage
+// cogoToast.success('This is a success message');
+// cogoToast.info('This is a info message');
+// cogoToast.loading('This is a loading message');
+// cogoToast.warn('This is a warn message');
+// cogoToast.error('This is a error message');
 
 import BaseLayout from '../../components/ui_layout/BaseLayout';
 import Loading from '../../components/ui_layout/Loading';
@@ -116,10 +124,15 @@ const InputField = withStyles({
 const Login = ({ history }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { userId, username, loading } = useSelector(state => state.userLogin);
+  const { userId, loading } = useSelector(state => state.userLogin);
   useEffect(() => {
     if (userId) {
-      history.push('/');
+      cogoToast.loading('Checking your credentials').then(() => {
+        cogoToast.success('Welcome to Evo Rentals!');
+      });
+      setTimeout(() => {
+        history.push('/');
+      }, 2500);
     }
   }, [history, userId]);
 
