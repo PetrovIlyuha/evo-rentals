@@ -707,7 +707,7 @@ function Icon() {
           style={{ isolation: 'isolate' }}
           fill='#fff'
           opacity='0.2'></path>
-        <g clip-path='url(#freepik--clip-path--inject-52)'>
+        <g clipPath='url(#freepik--clip-path--inject-52)'>
           <path
             d='M131.1 332.79l-.86 28.28c-7.26 6.67-11.53 10.43-17 15-.86-3.72-3-11.49-2.54-18.2 7.2-7.76 13.51-16.8 20.4-25.08z'
             style={{ isolation: 'isolate' }}
