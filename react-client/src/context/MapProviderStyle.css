@@ -1,0 +1,21 @@
+.rentals_marker {
+  background-color: rgba(151, 124, 124, 0.7);
+  border-radius: 50%;
+  margin-top: 60px;
+  border: 4px solid rgba(120, 248, 61, 0.842);
+  width: 140px;
+  height: 140px;
+  position: relative;
+}
+
+.rentals_marker:after {
+  content: 'Rental location';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: white;
+}
