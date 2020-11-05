@@ -17,7 +17,7 @@ function App() {
       <Router>
         <Header />
         <Switch>
-          <MapProvider apiKey='ZrkLqCmGAAT4fyCb2Dtni5XaMGosvHY2'>
+          <MapProvider apiKey={`${process.env.REACT_APP_TOM_MAP_API_KEY}`}>
             <Route path='/' exact component={RentalsHome} />
             <Route path='/rental/:id' exact component={RentalDetails} />
             <Route path='/login' component={LoginPage} />
