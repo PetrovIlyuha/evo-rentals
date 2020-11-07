@@ -6,6 +6,10 @@ import {
   RENTAL_DETAILS_SUCCESS,
   RENTAL_DETAILS_FAIL,
   RENTAL_DETAILS_RESET,
+  RENTAL_CREATE_REQUEST,
+  RENTAL_CREATE_SUCCESS,
+  RENTAL_CREATE_FAILURE,
+  RENTAL_CREATE_RESET,
 } from './types';
 
 export const rentalsListReducer = (
@@ -41,6 +45,34 @@ export const rentalDetailsReducer = (
       return { ...state, loading: false, error: payload };
     case RENTAL_DETAILS_RESET:
       return { ...state, rentalByID: {} };
+    default:
+      return state;
+  }
+};
+
+export const createRentalReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case RENTAL_CREATE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case RENTAL_CREATE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+      };
+    case RENTAL_CREATE_FAILURE:
+      return {
+        ...state,
+        error: payload,
+        loading: false,
+        success: false,
+      };
+    case RENTAL_CREATE_RESET:
+      return { ...state, success: null, error: null, loading: null };
     default:
       return state;
   }
