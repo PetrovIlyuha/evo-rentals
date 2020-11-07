@@ -33,22 +33,29 @@ export const registerUser = userData => async dispatch => {
 export const loginUser = loginData => async dispatch => {
   try {
     dispatch({ type: USER_LOGIN_REQUEST });
-    const { data } = await axios.post(`/api/v1/users/login`, loginData, {
+    const { data: token } = await axios.post(`/api/v1/users/login`, loginData, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
 
-    localStorage.setItem('user-session-token', data);
+    localStorage.setItem('user-session-token', token);
     let userId, username;
-    jwt.verify(data, process.env.REACT_APP_JWT_SECRET, function (err, decoded) {
+    jwt.verify(token, process.env.REACT_APP_JWT_SECRET, function (
+      err,
+      decoded,
+    ) {
       if (err) {
         throw new Error('Problem with decoding token');
       }
+
       userId = decoded.userId;
       username = decoded.username;
     });
-    dispatch({ type: USER_LOGIN_SUCCESS, payload: { userId, username } });
+    dispatch({
+      type: USER_LOGIN_SUCCESS,
+      payload: { token, userId, username },
+    });
   } catch (err) {
     dispatch({
       type: USER_LOGIN_FAILED,
