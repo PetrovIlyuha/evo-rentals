@@ -63,6 +63,7 @@ export const loginUserReducer = (
         ...state,
         userId: payload.userId,
         username: payload.username,
+        token: payload.token,
         loading: false,
         error: null,
       };
