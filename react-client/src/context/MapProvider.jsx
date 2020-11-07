@@ -8,6 +8,30 @@ import './MapProviderStyle.css';
 const MapContext = createContext();
 
 export const MapProvider = ({ children, apiKey }) => {
+  let cachedMaps =
+    JSON.parse(localStorage.getItem('evo-rentals-maps-cache')) || {};
+
+  const normalizeLocationData = location => {
+    return location.replace(/\s/g, '').toLowerCase();
+  };
+
+  const cacheLocation = (location, position) => {
+    const key = normalizeLocationData(location);
+
+    const updatedMapsCache = { ...cachedMaps, [key]: position };
+    localStorage.setItem(
+      'evo-rentals-maps-cache',
+      JSON.stringify(updatedMapsCache),
+    );
+  };
+
+  const getCachedLocation = location => {
+    const key = normalizeLocationData(location);
+    if (cachedMaps[key]) {
+      return cachedMaps[key];
+    }
+  };
+
   const initTomTomMap = () => {
     const map = tt.map({
       key: apiKey,
@@ -30,18 +54,23 @@ export const MapProvider = ({ children, apiKey }) => {
   };
 
   const requestGeoLocation = async location => {
-    try {
-      const mapResponse = await axios.get(
-        `https://api.tomtom.com/search/2/geocode/${location}.JSON?key=${apiKey}&typeahead=true`,
-      );
-      const position = mapResponse?.data?.results[0]?.position;
-      if (position) {
-        return position;
-      } else {
-        return mapResponse?.data?.results;
+    if (getCachedLocation(location)) {
+      return getCachedLocation(location);
+    } else {
+      try {
+        const mapResponse = await axios.get(
+          `https://api.tomtom.com/search/2/geocode/${location}.JSON?key=${apiKey}&typeahead=true`,
+        );
+        const position = mapResponse?.data?.results[0]?.position;
+        if (position) {
+          cacheLocation(location, position);
+          return position;
+        } else {
+          return mapResponse?.data?.results;
+        }
+      } catch (err) {
+        return 'Location was not found';
       }
-    } catch (err) {
-      return 'Location was not found';
     }
   };
 
