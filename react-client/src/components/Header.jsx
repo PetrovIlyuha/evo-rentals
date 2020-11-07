@@ -165,10 +165,10 @@ const Header = ({ history }) => {
             <MdSettingsApplications size={30} color='yellow' />
             {username}'s Account
           </NavLink>
-          {/* <NavLink to='/admin' className={classes.tab}>
+          <NavLink to='/rentals/new' className={classes.tab}>
             <MdSettingsApplications size={30} color='yellow' />
-            Admin Route
-          </NavLink> */}
+            Create Rental
+          </NavLink>
           <NavLink to='/' onClick={logoutUser} className={classes.tab}>
             <GiEgyptianWalk size={30} color='yellow' />
             Logout
