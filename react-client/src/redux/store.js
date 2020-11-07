@@ -2,6 +2,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import {
+  createRentalReducer,
   rentalDetailsReducer,
   rentalsListReducer,
 } from './rentals_slice/rentalsReducer';
@@ -15,6 +16,7 @@ import {
 const reducer = combineReducers({
   rentals: rentalsListReducer,
   rentalByID: rentalDetailsReducer,
+  createRental: createRentalReducer,
   userRegister: registerUserReducer,
   userLogin: loginUserReducer,
 });
