@@ -18,7 +18,8 @@ export const getRentalById = async (req, res) => {
 
 export const createRental = async (req, res) => {
   const rentalData = req.body;
-  const newRental = await Rental(rentalData);
+  rentalData.owner = res.locals.user;
+  const newRental = await new Rental(rentalData);
   newRental.save((err, data) => {
     if (err) {
       return Rental.showError(res, {

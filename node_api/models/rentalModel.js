@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
 const rentalSchema = new mongoose.Schema({
   title: {
@@ -23,10 +24,12 @@ const rentalSchema = new mongoose.Schema({
   numOfGuests: { type: Number, required: true },
   numOfBeds: { type: Number, required: true },
   shared: { type: Boolean, required: true },
+  owner: { type: Schema.Types.ObjectId, ref: 'User' },
   image: { type: String, required: true },
   image2: { type: String, required: true },
   dailyPrice: { type: Number, required: true },
   description: { type: String, required: true },
+  phone: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

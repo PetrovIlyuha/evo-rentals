@@ -6,13 +6,14 @@ import {
   removeRentalById,
   updateRentalById,
 } from '../controllers/rentalsController.js';
+import { authUserMiddleware } from '../middleware/authUserMiddleware.js';
 const router = express.Router();
 
 router.get('/rentals', getAllRentals);
 
 router.get('/rentals/:id', getRentalById);
 
-router.post('/rentals', createRental);
+router.post('/rentals', authUserMiddleware, createRental);
 
 router.delete('/rentals/:id', removeRentalById);
 
