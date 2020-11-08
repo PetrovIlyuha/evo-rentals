@@ -49,7 +49,7 @@ export const createRental = rentalValues => async dispatch => {
 
   try {
     dispatch({ type: RENTAL_CREATE_REQUEST });
-    await axios.post(`/api/v1/rentals/`, rentalValues, {
+    await axios.post(`/api/v1/rentals`, rentalValues, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
