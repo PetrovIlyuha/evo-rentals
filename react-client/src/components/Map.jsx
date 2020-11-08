@@ -8,13 +8,11 @@ import { useTomTomMap } from '../context/MapProvider';
 
 const useStyles = makeStyles(theme => ({
   mapDimentions: {
-    width: '700px',
+    width: '100%',
     height: '500px',
     margin: '2rem 0px',
-    [theme.breakpoints.down('md')]: {
-      width: '80vw',
-      height: '40vw',
-    },
+    border: '10px solid #3fea43',
+    borderRadius: '10px',
   },
 }));
 
@@ -52,11 +50,7 @@ const Map = ({ location }) => {
     map.current = initTomTomMap();
   }, [initTomTomMap]);
 
-  return (
-    <Grid item lg={8} md={8} xs={12}>
-      <div id='evo-map' className={classes.mapDimentions}></div>
-    </Grid>
-  );
+  return <div id='evo-map' className={classes.mapDimentions}></div>;
 };
 
 export default Map;

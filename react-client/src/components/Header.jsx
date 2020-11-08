@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
   tabContainer: {
     display: 'flex',
     marginLeft: 'auto',
-    maxWidth: '700px',
+    maxWidth: '800px',
   },
   tab: {
     ...theme.typography.tab,
