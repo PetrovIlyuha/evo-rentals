@@ -225,7 +225,6 @@ const NewRental = ({ history }) => {
             })}
             onSubmit={async (values, { setSubmitting, setErrors }) => {
               try {
-                console.dir({ values });
                 dispatch(createRental(values));
                 setSubmitting(false);
               } catch (error) {
