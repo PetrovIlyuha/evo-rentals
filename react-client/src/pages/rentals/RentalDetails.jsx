@@ -16,7 +16,9 @@ import { FaStoreAlt } from 'react-icons/fa';
 import { getRentalById } from '../../redux/rentals_slice/rentalActions';
 import { firstUpperLetter } from '../../utils/stringFunctions';
 import Map from '../../components/Map';
+import BookingReserve from '../../components/booking/BookingReserve';
 import { RENTAL_DETAILS_RESET } from '../../redux/rentals_slice/types';
+import RentalInfo from './RentalInfo';
 
 const useStyles = makeStyles(theme => ({
   '& .MuiGrid-root': {
@@ -66,6 +68,7 @@ const useStyles = makeStyles(theme => ({
   rentalMapComponent: {
     margin: '-20px 0 40px 0',
   },
+  bookrentalSection: {},
   location: {
     background: '#B4F0B9',
     width: '40vw',
@@ -213,51 +216,29 @@ const RentalDetails = ({ match }) => {
               </div>
             </Grid>
           </Grid>
-          <Grid
-            item
-            lg={8}
-            md={8}
-            sm={12}
-            className={classes.rentalMapComponent}>
-            {rentalLocation && <Map location={rentalLocation} />}
-          </Grid>
-          <Grid item lg={12} md={12} sm={12}>
-            <Divider />
-            <Grid container className={classes.location}>
-              <Grid lg={4} md={4} sm={4} item>
-                <Typography variant='body1'>
-                  <Typography variant='body2'>City:</Typography>{' '}
-                  {rentalByID && firstUpperLetter(rentalByID.city)}
-                </Typography>
-              </Grid>
-              <Grid item lg={4} md={4} sm={4}>
-                <Typography variant='body1'>
-                  <Typography variant='body2'> Street:</Typography>{' '}
-                  {rentalByID && firstUpperLetter(rentalByID.street)}
-                </Typography>
-              </Grid>
+          <Grid container justify='around' spacing={10}>
+            <Grid
+              item
+              lg={6}
+              md={6}
+              sm={12}
+              className={classes.rentalMapComponent}>
+              {rentalLocation && <Map location={rentalLocation} />}
             </Grid>
-            <Divider />
-            <Grid container className={classes.assetsGrid}>
-              {assets.map((asset, index) => (
-                <Grid
-                  key={index}
-                  item
-                  lg={4}
-                  md={6}
-                  sm={12}
-                  className={classes.asset}>
-                  {asset.icon} {asset.text}
-                </Grid>
-              ))}
-            </Grid>
-            <Grid item lg={12} md={10}>
-              <Typography className={classes.description}>
-                Description: <br />
-                {rentalByID.description}
-              </Typography>
+            <Grid
+              item
+              lg={6}
+              md={6}
+              sm={12}
+              className={classes.bookrentalSection}>
+              <BookingReserve rentalByID={rentalByID} />
             </Grid>
           </Grid>
+          <RentalInfo
+            rentalByID={rentalByID}
+            classes={classes}
+            assets={assets}
+          />
         </Grid>
       )}
     </BaseLayout>
