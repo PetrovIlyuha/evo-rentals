@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import VanillaTilt from 'vanilla-tilt';
 
-import { Divider, Grid, Hidden, makeStyles } from '@material-ui/core';
+import { Grid, Hidden, makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
 import BaseLayout from '../../components/ui_layout/BaseLayout';
@@ -14,7 +14,6 @@ import { CgSmartHomeWashMachine } from 'react-icons/cg';
 import { FaLayerGroup } from 'react-icons/fa';
 import { FaStoreAlt } from 'react-icons/fa';
 import { getRentalById } from '../../redux/rentals_slice/rentalActions';
-import { firstUpperLetter } from '../../utils/stringFunctions';
 import Map from '../../components/Map';
 import BookingReserve from '../../components/booking/BookingReserve';
 import { RENTAL_DETAILS_RESET } from '../../redux/rentals_slice/types';
