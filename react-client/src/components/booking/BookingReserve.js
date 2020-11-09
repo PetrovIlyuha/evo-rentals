@@ -186,7 +186,7 @@ const BookingReserve = ({ rentalByID }) => {
                 <Box margin={4}>
                   <Button
                     fullWidth
-                    color='info'
+                    color='secondary'
                     variant='contained'
                     disabled={
                       Object.keys(errors).length > 0 ||
