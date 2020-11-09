@@ -3,7 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DatePicker } from 'formik-material-ui-pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import * as Yup from 'yup';
+
 import {
   Button,
   Typography,
@@ -23,13 +23,27 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     width: '300px',
     height: '490px',
-    backgroundColor: 'lightgreen',
+    color: 'white',
+    backgroundColor: 'rgba(47,25,112,0.4)',
+    backgroundImage:
+      'radial-gradient(#fdfdff 1px, transparent 1px), radial-gradient(#fdfdff 1px, #171771 1px)',
+    backgroundSize: '40px 40px',
+    backgroundPosition: '0 0, 20px 20px',
+  },
+  datePicker: {
+    '& .MuiInputBase-input': {
+      color: 'white',
+    },
+    '& .MuiInputLabel-root': {
+      color: 'yellow',
+    },
   },
 }));
 
 const InputField = withStyles({
   root: {
-    color: 'black',
+    color: 'white',
+    backgroundColor: 'black',
     marginTop: '10px',
     '& label.Mui-focused': {
       color: '#62EC62',
@@ -37,12 +51,12 @@ const InputField = withStyles({
       fontWeight: 'bold',
     },
     '& label': {
-      color: '#C28CAE',
+      color: 'yellow',
     },
     '& .MuiInputBase-input': {
       fontWeight: '700',
-      color: '#675BA2',
-      backgroundColor: '#D6DCDF',
+      color: '#EDE342',
+      backgroundColor: '#5D4BCD',
       padding: '0.8rem 1rem',
       verticalAlign: 'middle',
       borderRadius: '5px',
@@ -70,22 +84,41 @@ const InputField = withStyles({
 
 const BookingReserve = ({ rentalByID }) => {
   const classes = useStyles();
+
+  const numberOfNightsBetweenDates = (startDate, endDate) => {
+    let dayCount = 0;
+    while (endDate > startDate) {
+      dayCount++;
+      startDate.setDate(startDate.getDate() + 1);
+    }
+    return dayCount;
+  };
   return (
     <Formik
       initialValues={{
         startDate: new Date(),
-        endDate: new Date(Date.now() + 1),
+        endDate: new Date().setDate(new Date().getDate() + 1),
         guests: 0,
       }}
-      validationSchema={Yup.object({
-        startDate: Yup.string().required('Choose start date.'),
-        endDate: Yup.string().required('Choose end date'),
-        guests: Yup.number().required('Guests field required'),
-      })}
+      validate={values => {
+        let errors = {};
+        if (values.startDate < new Date()) {
+          values.startDate = new Date();
+        }
+        if (values.startDate >= values.endDate) {
+          errors.endDate = 'End date must be after start date';
+          values.endDate = new Date().setDate(values.startDate.getDate() + 1);
+        }
+        if (values.guests <= 0) {
+          errors.guests = 'Number of guests should be at least 1';
+        }
+        if (values.guests > rentalByID.numOfGuests) {
+          errors.guests = `Max number of guests ${rentalByID.numOfGuests}`;
+        }
+        return errors;
+      }}
       onSubmit={async (values, { setSubmitting, setErrors }) => {
         try {
-          console.dir({ values });
-          alert(values);
           setSubmitting(false);
         } catch (error) {
           setErrors({
@@ -98,7 +131,14 @@ const BookingReserve = ({ rentalByID }) => {
         <Grid item lg={6} md={6} xs={12} className={classes.root}>
           <Form>
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <Typography variant='h3' style={{ textAlign: 'center' }}>
+              <Typography
+                variant='h3'
+                style={{
+                  color: 'yellow',
+                  backgroundColor: '#4D35B0',
+                  borderRadius: 4,
+                  textAlign: 'center',
+                }}>
                 $ {rentalByID.dailyPrice}
                 <span>/ night</span>
               </Typography>
@@ -106,6 +146,7 @@ const BookingReserve = ({ rentalByID }) => {
                 <Box margin={3}>
                   <Field
                     component={DatePicker}
+                    className={classes.datePicker}
                     name='startDate'
                     label='Start date'
                   />
@@ -113,6 +154,7 @@ const BookingReserve = ({ rentalByID }) => {
                 <Box margin={3}>
                   <Field
                     component={DatePicker}
+                    className={classes.datePicker}
                     name='endDate'
                     label='Ending date'
                   />
@@ -127,15 +169,32 @@ const BookingReserve = ({ rentalByID }) => {
                   />
                 </Box>
                 <Box margin={2}>
+                  <Typography
+                    style={{
+                      color: 'yellow',
+                      backgroundColor: '#4D35B0',
+                      borderRadius: 4,
+                      textAlign: 'center',
+                    }}>
+                    Rental Cost: ${' '}
+                    {numberOfNightsBetweenDates(
+                      new Date(values.startDate),
+                      new Date(values.endDate),
+                    ) * rentalByID.dailyPrice}
+                  </Typography>
+                </Box>
+                <Box margin={4}>
                   <Button
                     fullWidth
-                    color='primary'
+                    color='info'
                     variant='contained'
+                    disabled={
+                      Object.keys(errors).length > 0 ||
+                      values.startDate <
+                        new Date().setDate(new Date().getDate() - 1)
+                    }
                     elevation={10}
-                    onClick={() => alert(JSON.stringify(values))}
-                    type='submit'
-                    // endIcon={<GiTwirlCenter />}>
-                  >
+                    type='submit'>
                     Reserve place
                   </Button>
                 </Box>
