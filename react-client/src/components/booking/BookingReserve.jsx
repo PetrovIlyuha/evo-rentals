@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field } from 'formik';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DatePicker } from 'formik-material-ui-pickers';
 import DateFnsUtils from '@date-io/date-fns';
 
+import Loading from '../ui_layout/Loading';
+
 import {
-  Button,
   Typography,
   makeStyles,
   Grid,
@@ -13,6 +14,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { TextField } from 'formik-material-ui';
+import ConfirmationModal from './ConfirmationModal';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -84,7 +86,8 @@ const InputField = withStyles({
 
 const BookingReserve = ({ rentalByID }) => {
   const classes = useStyles();
-
+  const [submit, setSubmit] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const numberOfNightsBetweenDates = (startDate, endDate) => {
     let dayCount = 0;
     while (endDate > startDate) {
@@ -93,11 +96,16 @@ const BookingReserve = ({ rentalByID }) => {
     }
     return dayCount;
   };
+
+  if (submit) {
+    return <Loading />;
+  }
+
   return (
     <Formik
       initialValues={{
         startDate: new Date(),
-        endDate: new Date().setDate(new Date().getDate() + 1),
+        endDate: new Date(new Date().setDate(new Date().getDate() + 1)),
         guests: 0,
       }}
       validate={values => {
@@ -117,16 +125,7 @@ const BookingReserve = ({ rentalByID }) => {
         }
         return errors;
       }}
-      onSubmit={async (values, { setSubmitting, setErrors }) => {
-        try {
-          setSubmitting(false);
-        } catch (error) {
-          setErrors({
-            error: 'Could not create new rental! Try later...',
-          });
-          console.error(error);
-        }
-      }}>
+      onSubmit={async (values, { setSubmitting, setErrors }) => {}}>
       {({ values, errors }) => (
         <Grid item lg={6} md={6} xs={12} className={classes.root}>
           <Form>
@@ -183,20 +182,43 @@ const BookingReserve = ({ rentalByID }) => {
                     ) * rentalByID.dailyPrice}
                   </Typography>
                 </Box>
+                <Box margin={2}>
+                  <Typography
+                    style={{
+                      color: 'yellow',
+                      backgroundColor: '#4D35B0',
+                      borderRadius: 4,
+                      textAlign: 'center',
+                    }}>
+                    {' '}
+                    for{' '}
+                    {numberOfNightsBetweenDates(
+                      new Date(values.startDate),
+                      new Date(values.endDate),
+                    ) > 1
+                      ? `${numberOfNightsBetweenDates(
+                          new Date(values.startDate),
+                          new Date(values.endDate),
+                        )} Days stay`
+                      : `${numberOfNightsBetweenDates(
+                          new Date(values.startDate),
+                          new Date(values.endDate),
+                        )} Day stay`}
+                  </Typography>
+                </Box>
                 <Box margin={4}>
-                  <Button
-                    fullWidth
-                    color='secondary'
-                    variant='contained'
-                    disabled={
-                      Object.keys(errors).length > 0 ||
-                      values.startDate <
-                        new Date().setDate(new Date().getDate() - 1)
-                    }
-                    elevation={10}
-                    type='submit'>
-                    Reserve place
-                  </Button>
+                  <ConfirmationModal
+                    formValues={values}
+                    errors={errors}
+                    submitError={submitError}
+                    setSubmitError={setSubmitError}
+                    setSubmit={setSubmit}
+                    days={numberOfNightsBetweenDates(
+                      new Date(values.startDate),
+                      new Date(values.endDate),
+                    )}
+                    price={rentalByID.dailyPrice}
+                  />
                 </Box>
               </Box>
             </MuiPickersUtilsProvider>
