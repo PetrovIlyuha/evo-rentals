@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import ReactGlobe from 'react-globe';
 
 import BaseLayout from '../../components/ui_layout/BaseLayout';
 import Grid from '@material-ui/core/Grid';
@@ -10,9 +11,17 @@ import RentalCard from './RentalCard';
 import { listAllRentals } from '../../redux/rentals_slice/rentalActions';
 import Loading from '../../components/ui_layout/Loading';
 
-// const useStyles = makeStyles(theme => ({}));
+const useStyles = makeStyles(theme => ({
+  globeContainer: {
+    marginTop: '-4rem',
+    marginBottom: '2rem',
+  },
+  globe: {
+    height: '20vh',
+  },
+}));
 const RentalsHome = ({ history }) => {
-  // const classes = useStyles();
+  const classes = useStyles();
   const dispatch = useDispatch();
   const { rentals: allRentals, loading } = useSelector(state => state.rentals);
 
@@ -25,6 +34,16 @@ const RentalsHome = ({ history }) => {
   }
   return (
     <BaseLayout>
+      <Grid
+        container
+        justify='center'
+        align='center'
+        spacing={2}
+        className={classes.globeContainer}>
+        <Grid item lg={12} md={12} xs={12} className={classes.globe}>
+          <ReactGlobe style={{ height: '10vh' }} />
+        </Grid>
+      </Grid>
       <Grid container justify='center' align='center' spacing={3}>
         {allRentals &&
           allRentals.map((rental, index) => {
