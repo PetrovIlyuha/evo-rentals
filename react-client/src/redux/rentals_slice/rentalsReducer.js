@@ -10,6 +10,9 @@ import {
   RENTAL_CREATE_SUCCESS,
   RENTAL_CREATE_FAILURE,
   RENTAL_CREATE_RESET,
+  BOOKING_CREATE_REQUEST,
+  BOOKING_CREATE_SUCCESS,
+  BOOKING_CREATE_FAILURE,
 } from './types';
 
 export const rentalsListReducer = (
@@ -73,6 +76,19 @@ export const createRentalReducer = (state = {}, { type, payload }) => {
       };
     case RENTAL_CREATE_RESET:
       return { ...state, success: null, error: null, loading: null };
+    default:
+      return state;
+  }
+};
+
+export const createBookingReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case BOOKING_CREATE_REQUEST:
+      return { ...state, loading: true };
+    case BOOKING_CREATE_SUCCESS:
+      return { ...state, loading: false, success: true, booking: payload };
+    case BOOKING_CREATE_FAILURE:
+      return { ...state, loading: false, error: payload };
     default:
       return state;
   }
