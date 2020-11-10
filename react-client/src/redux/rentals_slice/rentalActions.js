@@ -10,6 +10,9 @@ import {
   RENTAL_DETAILS_FAIL,
   RENTAL_DETAILS_REQUEST,
   RENTAL_DETAILS_SUCCESS,
+  BOOKING_CREATE_REQUEST,
+  BOOKING_CREATE_SUCCESS,
+  BOOKING_CREATE_FAILURE,
 } from './types';
 
 export const listAllRentals = () => async dispatch => {
@@ -66,5 +69,29 @@ export const createRental = rentalValues => async dispatch => {
     });
   } finally {
     dispatch({ type: RENTAL_CREATE_RESET });
+  }
+};
+
+export const createBooking = bookingData => async dispatch => {
+  const token = localStorage.getItem('user-session-token');
+  try {
+    dispatch({ type: BOOKING_CREATE_REQUEST });
+    const { data } = await axios.post(`/api/v1/bookings`, bookingData, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch({ type: BOOKING_CREATE_SUCCESS, payload: data });
+  } catch (err) {
+    dispatch({
+      type: RENTAL_CREATE_FAILURE,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  } finally {
+    dispatch({ type: BOOKING_CREATE_FAILURE });
   }
 };
