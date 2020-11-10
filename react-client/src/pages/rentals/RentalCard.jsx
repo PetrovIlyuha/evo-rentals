@@ -28,6 +28,11 @@ const useStyles = makeStyles(theme => ({
   },
   media: {
     height: 140,
+    transition: 'all .44s ease-in-out',
+    '&:hover': {
+      transform: 'scale(1.15)',
+      height: 140,
+    },
   },
   cardStyles: {
     backgroundColor: theme.palette.common.lightBlue,
