@@ -15,7 +15,7 @@ import { FaLayerGroup } from 'react-icons/fa';
 import { FaStoreAlt } from 'react-icons/fa';
 import { getRentalById } from '../../redux/rentals_slice/rentalActions';
 import Map from '../../components/Map';
-import BookingReserve from '../../components/booking/BookingReserve';
+import BookingReserve from '../../components/booking/BookingReserve.jsx';
 import { RENTAL_DETAILS_RESET } from '../../redux/rentals_slice/types';
 import RentalInfo from './RentalInfo';
 
