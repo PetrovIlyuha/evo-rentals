@@ -5,6 +5,18 @@ export const getAllRentals = async (req, res) => {
   res.json(data);
 };
 
+export const getOnlyMyRentals = async (req, res) => {
+  const userId = req.body.userId;
+  const data = await Rental.find({ owner: userId });
+  if (data) {
+    res.json(data);
+  } else {
+    res
+      .status(404)
+      .json({ error: 'You have got no rentals by now...Create one!' });
+  }
+};
+
 export const getRentalById = async (req, res) => {
   const placeID = req.params.id;
   const rental = await Rental.findById(placeID);
