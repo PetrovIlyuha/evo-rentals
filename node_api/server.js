@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import connectDB from './config/connectMongo.js';
 import rentalsRoutes from './routes/rentalsRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import bookingsRoutes from './routes/bookingsRoutes.js';
 
 dotenv.config();
 import { mongooseErrorHandler } from './middleware/errorHandling.js';
@@ -16,6 +17,7 @@ const app = express();
 // models
 import { Rental } from './models/rentalModel.js';
 import { User } from './models/userModel.js';
+import { Booking } from './models/bookingModel.js';
 
 // middlewares
 import { authUserMiddleware } from './middleware/authUserMiddleware.js';
@@ -33,6 +35,7 @@ app.get('/api/v1/authorized', authUserMiddleware, (req, res) => {
 // routes
 app.use('/api/v1/', rentalsRoutes);
 app.use('/api/v1/users/', userRoutes);
+app.use('/api/v1/bookings', bookingsRoutes);
 
 const PORT = process.env.PORT || 4000;
 
