@@ -2,6 +2,9 @@ import {
   RENTALS_LIST_FAIL,
   RENTALS_LIST_REQUEST,
   RENTALS_LIST_SUCCESS,
+  MY_RENTALS_LIST_REQUEST,
+  MY_RENTALS_LIST_SUCCESS,
+  MY_RENTALS_LIST_FAIL,
   RENTAL_DETAILS_REQUEST,
   RENTAL_DETAILS_SUCCESS,
   RENTAL_DETAILS_FAIL,
@@ -13,6 +16,10 @@ import {
   BOOKING_CREATE_REQUEST,
   BOOKING_CREATE_SUCCESS,
   BOOKING_CREATE_FAILURE,
+  CREATE_BOOKING_RESET,
+  MY_BOOKINGS_LIST_REQUEST,
+  MY_BOOKINGS_LIST_SUCCESS,
+  MY_BOOKINGS_LIST_FAIL,
 } from './types';
 
 export const rentalsListReducer = (
@@ -29,6 +36,26 @@ export const rentalsListReducer = (
         rentals: payload,
       };
     case RENTALS_LIST_FAIL:
+      return { ...state, loading: false, error: payload };
+    default:
+      return state;
+  }
+};
+
+export const authenticatedUserRentalsList = (
+  state = { rentals: [] },
+  { type, payload },
+) => {
+  switch (type) {
+    case MY_RENTALS_LIST_REQUEST:
+      return { ...state, loading: true, rentals: [] };
+    case MY_RENTALS_LIST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        rentals: payload,
+      };
+    case MY_RENTALS_LIST_FAIL:
       return { ...state, loading: false, error: payload };
     default:
       return state;
@@ -88,6 +115,34 @@ export const createBookingReducer = (state = {}, { type, payload }) => {
     case BOOKING_CREATE_SUCCESS:
       return { ...state, loading: false, success: true, booking: payload };
     case BOOKING_CREATE_FAILURE:
+      return {
+        ...state,
+        booking: null,
+        loading: false,
+        success: false,
+        error: 'Time period is not available. Check the calendar!',
+      };
+    case CREATE_BOOKING_RESET:
+      return { ...state, loading: false, success: false, error: false };
+    default:
+      return state;
+  }
+};
+
+export const currentUserBookingsList = (
+  state = { bookings: [] },
+  { type, payload },
+) => {
+  switch (type) {
+    case MY_BOOKINGS_LIST_REQUEST:
+      return { ...state, loading: true, bookings: [] };
+    case MY_BOOKINGS_LIST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        bookings: payload,
+      };
+    case MY_BOOKINGS_LIST_FAIL:
       return { ...state, loading: false, error: payload };
     default:
       return state;
