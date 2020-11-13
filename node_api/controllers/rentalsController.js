@@ -19,13 +19,15 @@ export const getOnlyMyRentals = async (req, res) => {
 
 export const getRentalById = async (req, res) => {
   const placeID = req.params.id;
+  console.log('get rental by id controller');
   const rental = await Rental.findById(placeID);
-  if (rental) {
-    return res.status(200).json(rental);
-  } else {
-    res.status(404);
-    throw new Error('Rental not found');
-  }
+  rental.views += 1;
+  rental.save((err, savedRental) => {
+    if (err) {
+      return res.status(401).json({ error: 'Failed to update rental data' });
+    }
+    res.status(200).json(savedRental);
+  });
 };
 
 export const createRental = async (req, res) => {
