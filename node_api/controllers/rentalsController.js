@@ -19,7 +19,6 @@ export const getOnlyMyRentals = async (req, res) => {
 
 export const getRentalById = async (req, res) => {
   const placeID = req.params.id;
-  console.log('get rental by id controller');
   const rental = await Rental.findById(placeID);
   rental.views += 1;
   rental.save((err, savedRental) => {
