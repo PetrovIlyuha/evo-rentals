@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
@@ -18,7 +19,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import { Divider } from '@material-ui/core';
+import { Box, Divider } from '@material-ui/core';
 import { firstUpperLetter } from '../../utils/stringFunctions';
 
 const useStyles = makeStyles(theme => ({
@@ -50,12 +51,22 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: '#27166E',
     color: '#CCCED9',
   },
+  myPosting: {
+    ...theme.typography.h2,
+    background: 'linear-gradient(to right, #8e2de2, #4a00e0)',
+    color: 'white',
+    height: '35px',
+  },
 }));
 
-export default function RentalCard({ rental }) {
+export default function RentalCard({ rental, isOwner }) {
   const classes = useStyles();
+
   return (
     <Card className={classes.root}>
+      {isOwner && (
+        <CardHeader title='My Posting' className={classes.myPosting} />
+      )}
       <CardActionArea>
         <CardMedia
           className={classes.media}
@@ -91,6 +102,13 @@ export default function RentalCard({ rental }) {
               ${rental.dailyPrice}
             </Typography>
           </Paper>
+          <Box margin={1}>
+            <Typography
+              variant='body1'
+              style={{ marginRight: '-40%', width: '100%' }}>
+              Rental views: <strong>{rental.views}</strong>
+            </Typography>
+          </Box>
           <Accordion TransitionProps={{ unmountOnExit: true }}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
