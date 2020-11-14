@@ -53,3 +53,13 @@ export const getMyBookings = async (req, res) => {
     res.status(404).json({ error: 'No bookings for this user exists!' });
   }
 };
+
+export const getAllBookingsById = async (req, res) => {
+  const { rentalId } = req.body;
+  try {
+    const data = await Booking.find({ rental: rentalId }).populate('rental');
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(404).json({ message: 'No bookings for this place yet!' });
+  }
+};
