@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { firstUpperLetter } from '../../utils/stringFunctions';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
@@ -11,7 +11,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
-import { useEffect } from 'react';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
