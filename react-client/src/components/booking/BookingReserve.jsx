@@ -84,7 +84,18 @@ const InputField = withStyles({
   },
 })(TextField);
 
-const BookingReserve = ({ rentalByID }) => {
+// const CustomDatePicker = withStyles({
+//   root: {
+//     '& .MuiPickersDay-day': {
+//       backgroundColor: 'red',
+//     },
+//   },
+//   '& .MuiDialogContent-root': {
+//     backgroundColor: 'green',
+//   },
+// })(DatePicker);
+
+const BookingReserve = ({ rentalByID, existingBookings }) => {
   const classes = useStyles();
   const [submit, setSubmit] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -106,7 +117,7 @@ const BookingReserve = ({ rentalByID }) => {
       initialValues={{
         startDate: new Date(),
         endDate: new Date(new Date().setDate(new Date().getDate() + 1)),
-        guests: 0,
+        guests: 1,
       }}
       validate={values => {
         let errors = {};
@@ -213,6 +224,7 @@ const BookingReserve = ({ rentalByID }) => {
                     submitError={submitError}
                     setSubmitError={setSubmitError}
                     setSubmit={setSubmit}
+                    rental={rentalByID}
                     days={numberOfNightsBetweenDates(
                       new Date(values.startDate),
                       new Date(values.endDate),
