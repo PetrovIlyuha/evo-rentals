@@ -20,6 +20,9 @@ import {
   MY_BOOKINGS_LIST_REQUEST,
   MY_BOOKINGS_LIST_SUCCESS,
   MY_BOOKINGS_LIST_FAIL,
+  BOOKING_BY_ID_REQUEST,
+  BOOKING_BY_ID_SUCCESS,
+  BOOKING_BY_ID_FAILURE,
 } from './types';
 
 export const rentalsListReducer = (
@@ -108,22 +111,32 @@ export const createRentalReducer = (state = {}, { type, payload }) => {
   }
 };
 
-export const createBookingReducer = (state = {}, { type, payload }) => {
+export const createBookingReducer = (
+  state = { error: 'clear' },
+  { type, payload },
+) => {
   switch (type) {
     case BOOKING_CREATE_REQUEST:
       return { ...state, loading: true };
     case BOOKING_CREATE_SUCCESS:
-      return { ...state, loading: false, success: true, booking: payload };
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: 'clear',
+        booking: payload,
+      };
     case BOOKING_CREATE_FAILURE:
       return {
         ...state,
         booking: null,
         loading: false,
         success: false,
-        error: 'Time period is not available. Check the calendar!',
+        error:
+          'Time period overlaps with existing bookings. Check the bookings table below the location detail!',
       };
     case CREATE_BOOKING_RESET:
-      return { ...state, loading: false, success: false, error: false };
+      return { ...state, loading: false, success: false, error: 'clear' };
     default:
       return state;
   }
@@ -144,6 +157,19 @@ export const currentUserBookingsList = (
       };
     case MY_BOOKINGS_LIST_FAIL:
       return { ...state, loading: false, error: payload };
+    default:
+      return state;
+  }
+};
+
+export const bookingsByRentalIDReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case BOOKING_BY_ID_REQUEST:
+      return { loading: true };
+    case BOOKING_BY_ID_SUCCESS:
+      return { ...state, loading: false, bookings: payload, success: true };
+    case BOOKING_BY_ID_FAILURE:
+      return { error: 'No bookings for this location yet!' };
     default:
       return state;
   }
