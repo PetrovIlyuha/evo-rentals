@@ -13,11 +13,19 @@ import { SiAirtable } from 'react-icons/si';
 import { CgSmartHomeWashMachine } from 'react-icons/cg';
 import { FaLayerGroup } from 'react-icons/fa';
 import { FaStoreAlt } from 'react-icons/fa';
-import { getRentalById } from '../../redux/rentals_slice/rentalActions';
+import {
+  getBookingsById,
+  getRentalById,
+} from '../../redux/rentals_slice/rentalActions';
 import Map from '../../components/Map';
 import BookingReserve from '../../components/booking/BookingReserve.jsx';
-import { RENTAL_DETAILS_RESET } from '../../redux/rentals_slice/types';
+import {
+  CREATE_BOOKING_RESET,
+  RENTAL_DETAILS_RESET,
+} from '../../redux/rentals_slice/types';
 import RentalInfo from './RentalInfo';
+import cogoToast from 'cogo-toast';
+import ExistingBookingsByLocation from '../../components/booking/ExistingBookingsByLocation';
 
 const useStyles = makeStyles(theme => ({
   '& .MuiGrid-root': {
@@ -125,6 +133,14 @@ const RentalDetails = ({ match }) => {
   const rentalId = match.params.id;
   const dispatch = useDispatch();
   const { rentalByID, loading } = useSelector(state => state.rentalByID);
+  const { userId } = useSelector(state => state.userLogin);
+  const { loading: loadingBooking, success, error } = useSelector(
+    state => state.booking,
+  );
+  const { bookings } = useSelector(state => state.bookingsByRentalID);
+
+  const isOwner = userId === rentalByID?.owner;
+
   let city, street, rentalLocation;
   if (rentalByID) {
     city = rentalByID.city;
@@ -132,6 +148,16 @@ const RentalDetails = ({ match }) => {
     rentalLocation = `${city} ${street}`;
   }
   const tiltRef = useRef(null);
+  console.log(error);
+  useEffect(() => {
+    if (error?.includes('overlaps')) cogoToast.error(error);
+  }, [error]);
+
+  useEffect(() => {
+    if (success) {
+      cogoToast.success('Booking has been created!');
+    }
+  }, [success]);
 
   // image tilt (visual sugar)
   useEffect(() => {
@@ -151,12 +177,14 @@ const RentalDetails = ({ match }) => {
 
   useEffect(() => {
     dispatch(getRentalById(rentalId));
+    dispatch(getBookingsById(rentalId));
     return () => {
       dispatch({ type: RENTAL_DETAILS_RESET });
+      dispatch({ type: CREATE_BOOKING_RESET });
     };
   }, [dispatch, rentalId]);
 
-  if (loading) {
+  if (loading || loadingBooking) {
     return <Loading size={50} loading={loading} />;
   }
 
@@ -224,15 +252,37 @@ const RentalDetails = ({ match }) => {
               className={classes.rentalMapComponent}>
               {rentalLocation && <Map location={rentalLocation} />}
             </Grid>
-            <Grid
-              item
-              lg={6}
-              md={6}
-              sm={12}
-              className={classes.bookrentalSection}>
-              <BookingReserve rentalByID={rentalByID} />
-            </Grid>
+            {!isOwner && (
+              <Grid
+                item
+                lg={6}
+                md={6}
+                sm={12}
+                className={classes.bookrentalSection}>
+                <BookingReserve
+                  rentalByID={rentalByID}
+                  existingBookings={bookings}
+                />
+              </Grid>
+            )}
           </Grid>
+          {bookings && bookings.length > 0 && !isOwner ? (
+            <Grid container spacing={10} style={{ marginBottom: 49 }}>
+              <Grid item lg={10} md={10}>
+                <Typography variant='h4' style={{ marginBottom: 20 }}>
+                  This location active bookings
+                </Typography>
+                <ExistingBookingsByLocation
+                  style={{ width: '120%', minHeight: '350px' }}
+                  bookings={bookings}
+                />
+              </Grid>
+            </Grid>
+          ) : (
+            <Typography variant='h3'>
+              Location has no active Bookings! Take an advantage!
+            </Typography>
+          )}
           <RentalInfo
             rentalByID={rentalByID}
             classes={classes}
