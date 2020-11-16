@@ -1,7 +1,7 @@
 import { Rental } from '../models/rentalModel.js';
 
 export const getAllRentals = async (req, res) => {
-  const data = await Rental.find({});
+  const data = await Rental.find({}).populate('owner');
   res.json(data);
 };
 
@@ -19,14 +19,48 @@ export const getOnlyMyRentals = async (req, res) => {
 
 export const getRentalById = async (req, res) => {
   const placeID = req.params.id;
-  const rental = await Rental.findById(placeID);
+  const rental = await Rental.findById(placeID).populate('owner');
   rental.views += 1;
   rental.save((err, savedRental) => {
     if (err) {
-      return res.status(401).json({ error: 'Failed to update rental data' });
+      return res
+        .status(401)
+        .json({ error: 'Failed to update rental data after view' });
     }
     res.status(200).json(savedRental);
   });
+};
+
+export const getRentalOwner = async (req, res) => {
+  const placeId = req.params.id;
+  console.log(placeId);
+  const rentalWithOwner = await Rental.findById(placeId)
+    .populate('owner')
+    .select('-_id')
+    .select('-category')
+    .select('-numOfRooms')
+    .select('-numOfGuests')
+    .select('-numOfBeds')
+    .select('-phone')
+    .select('-image')
+    .select('-image2')
+    .select('-dailyPrice')
+    .select('-description')
+    .select('-createdAt')
+    .select('-updatedAt')
+    .select('-__v')
+    .select('-shared')
+    .select('-views')
+    .select('-title')
+    .select('-city')
+    .select('-street');
+  if (rentalWithOwner) {
+    res.status(200).json(rentalWithOwner);
+  } else {
+    res
+      .status(404)
+      .json({ error: 'Owner of the location was not found. That is weird!' });
+  }
 };
 
 export const createRental = async (req, res) => {
