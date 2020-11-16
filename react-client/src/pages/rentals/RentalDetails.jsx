@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import VanillaTilt from 'vanilla-tilt';
 
 import { Grid, Hidden, makeStyles } from '@material-ui/core';
@@ -16,6 +17,7 @@ import { FaStoreAlt } from 'react-icons/fa';
 import {
   getBookingsById,
   getRentalById,
+  getRentalOwner,
 } from '../../redux/rentals_slice/rentalActions';
 import Map from '../../components/Map';
 import BookingReserve from '../../components/booking/BookingReserve.jsx';
@@ -71,6 +73,12 @@ const useStyles = makeStyles(theme => ({
       width: '80%',
       height: '100px',
     },
+  },
+  ownerSection: {
+    padding: '20px 40px',
+    background: 'linear-gradient(to left, #8e9eab, #eef2f3)',
+    width: '47%',
+    marginBottom: 30,
   },
   rentalMapComponent: {
     margin: '-20px 0 40px 0',
@@ -138,9 +146,11 @@ const RentalDetails = ({ match }) => {
     state => state.booking,
   );
   const { bookings } = useSelector(state => state.bookingsByRentalID);
-
+  const { owner } = useSelector(state => state.rentalOwner);
+  const loginToken = localStorage.getItem('user-session-token');
+  console.log(loginToken);
   const isOwner = userId === rentalByID?.owner;
-
+  const ownerDetails = owner?.owner || null;
   let city, street, rentalLocation;
   if (rentalByID) {
     city = rentalByID.city;
@@ -148,7 +158,7 @@ const RentalDetails = ({ match }) => {
     rentalLocation = `${city} ${street}`;
   }
   const tiltRef = useRef(null);
-  console.log(error);
+
   useEffect(() => {
     if (error?.includes('overlaps')) cogoToast.error(error);
   }, [error]);
@@ -178,6 +188,7 @@ const RentalDetails = ({ match }) => {
   useEffect(() => {
     dispatch(getRentalById(rentalId));
     dispatch(getBookingsById(rentalId));
+    dispatch(getRentalOwner(rentalId));
     return () => {
       dispatch({ type: RENTAL_DETAILS_RESET });
       dispatch({ type: CREATE_BOOKING_RESET });
@@ -243,6 +254,51 @@ const RentalDetails = ({ match }) => {
               </div>
             </Grid>
           </Grid>
+
+          <Grid container className={classes.ownerSection}>
+            <Grid item lg={12} md={12}>
+              <Typography variant='h3'>Owner Contacts</Typography>
+              <Typography variant='h4' style={{ marginTop: 20 }}>
+                <span
+                  style={{
+                    backgroundColor: 'rgba(0,0,0,0.4)',
+                    borderRadius: 10,
+                    padding: '3px 5px',
+                    marginRight: 10,
+                    color: 'white',
+                  }}>
+                  Phone:
+                </span>{' '}
+                {rentalByID.phone}
+              </Typography>
+              <Typography variant='h4' style={{ marginTop: 20 }}>
+                <span
+                  style={{
+                    backgroundColor: 'rgba(0,0,0,0.4)',
+                    borderRadius: 10,
+                    padding: '3px 5px',
+                    marginRight: 10,
+                    color: 'white',
+                  }}>
+                  Email:
+                </span>{' '}
+                {ownerDetails.email}
+              </Typography>
+              <Typography variant='h4' style={{ marginTop: 20 }}>
+                <span
+                  style={{
+                    backgroundColor: 'rgba(0,0,0,0.4)',
+                    borderRadius: 10,
+                    padding: '3px 5px',
+                    marginRight: 10,
+                    color: 'white',
+                  }}>
+                  Owner username:{' '}
+                </span>
+                {ownerDetails.username}
+              </Typography>
+            </Grid>
+          </Grid>
           <Grid container justify='around' spacing={10}>
             <Grid
               item
@@ -252,7 +308,7 @@ const RentalDetails = ({ match }) => {
               className={classes.rentalMapComponent}>
               {rentalLocation && <Map location={rentalLocation} />}
             </Grid>
-            {!isOwner && (
+            {!isOwner && loginToken !== null ? (
               <Grid
                 item
                 lg={6}
@@ -263,6 +319,24 @@ const RentalDetails = ({ match }) => {
                   rentalByID={rentalByID}
                   existingBookings={bookings}
                 />
+              </Grid>
+            ) : (
+              <Grid
+                item
+                lg={6}
+                md={6}
+                sm={12}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                }}>
+                <Typography variant='h3'>
+                  Please <Link to='/login'>Login</Link> or{' '}
+                  <Link to='/register'>Register</Link> new account to book any
+                  location! <br /> No Email Confirmation! <br /> Takes less than
+                  a minute!
+                </Typography>
               </Grid>
             )}
           </Grid>

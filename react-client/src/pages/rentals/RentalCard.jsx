@@ -61,7 +61,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function RentalCard({ rental, isOwner }) {
   const classes = useStyles();
-
   return (
     <Card className={classes.root}>
       {isOwner && (

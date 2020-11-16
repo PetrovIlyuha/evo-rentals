@@ -84,16 +84,13 @@ const InputField = withStyles({
   },
 })(TextField);
 
-// const CustomDatePicker = withStyles({
-//   root: {
-//     '& .MuiPickersDay-day': {
-//       backgroundColor: 'red',
-//     },
-//   },
-//   '& .MuiDialogContent-root': {
-//     backgroundColor: 'green',
-//   },
-// })(DatePicker);
+const CustomDatePicker = withStyles({
+  root: {
+    '& .Mui-Pickers-Day': {
+      backgroundColor: 'red',
+    },
+  },
+})(DatePicker);
 
 const BookingReserve = ({ rentalByID, existingBookings }) => {
   const classes = useStyles();
@@ -155,7 +152,7 @@ const BookingReserve = ({ rentalByID, existingBookings }) => {
               <Box component='form'>
                 <Box margin={3}>
                   <Field
-                    component={DatePicker}
+                    component={CustomDatePicker}
                     className={classes.datePicker}
                     name='startDate'
                     label='Start date'
@@ -163,7 +160,7 @@ const BookingReserve = ({ rentalByID, existingBookings }) => {
                 </Box>
                 <Box margin={3}>
                   <Field
-                    component={DatePicker}
+                    component={CustomDatePicker}
                     className={classes.datePicker}
                     name='endDate'
                     label='Ending date'
