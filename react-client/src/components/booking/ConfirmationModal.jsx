@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import {
@@ -10,7 +10,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import { format } from 'date-fns';
+import { useDispatch, useSelector } from 'react-redux';
+
 import ModalHomeImage from '../../assets/modal_home_confirm.png';
+import { createBooking } from '../../redux/rentals_slice/rentalActions';
 
 const useStyles = makeStyles(theme => ({
   visitDetail: {
@@ -52,23 +55,44 @@ const ConfirmationModal = ({
   formValues,
   errors,
   setError,
+  rental,
   setSubmitError,
   setSubmit,
   days,
   price,
 }) => {
   const classes = useStyles();
+  const { userId } = useSelector(state => state.userLogin);
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const { startDate, endDate, guests } = formValues;
+
   let arrivalDay = format(new Date(startDate), 'dd MMMM yyyy');
   let departureDay = format(new Date(endDate), 'dd MMMM yyyy');
   const totalPrice = days * price;
+
   const [booking, setBooking] = useState({
-    startDate: startDate.toISOString(),
-    endDate: endDate.toISOString(),
-    guests,
+    startDate: startDate,
+    endDate: endDate,
     totalPrice,
+    nights: days,
+    guests,
+    rental,
+    user: userId,
   });
+
+  useEffect(() => {
+    setBooking({
+      ...booking,
+      startDate,
+      endDate,
+      nights: days,
+      guests,
+      totalPrice,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startDate, endDate, days, guests, totalPrice]);
+
   const onOpenModal = e => {
     e.preventDefault();
     setOpen(true);
@@ -76,15 +100,14 @@ const ConfirmationModal = ({
 
   const onCloseModal = () => setOpen(false);
 
-  const createBooking = () => {
-    console.log(booking);
+  const createBookingSubmitHandler = () => {
+    dispatch(createBooking(booking));
+    onCloseModal();
   };
   return (
     <Box margin={4}>
       <Button
         onClick={onOpenModal}
-        день
-        отбытия
         fullWidth
         color='secondary'
         variant='contained'
@@ -140,7 +163,7 @@ const ConfirmationModal = ({
                 e.preventDefault();
                 try {
                   setSubmit(true);
-                  createBooking();
+                  createBookingSubmitHandler();
                   setSubmit(false);
                 } catch (error) {
                   setSubmitError({
