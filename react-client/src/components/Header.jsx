@@ -3,20 +3,27 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tabs from '@material-ui/core/Tabs';
 import cogoToast from 'cogo-toast';
+import { Link, NavLink, withRouter } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
-import { Link, NavLink, withRouter } from 'react-router-dom';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import FormControl from '@material-ui/core/FormControl';
+
+import TextField from '@material-ui/core/TextField';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Tooltip from '@material-ui/core/Tooltip';
 import { useTheme } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+
 import { GiEgyptianWalk } from 'react-icons/gi';
 import { IoMdLogIn } from 'react-icons/io';
 import { AiOutlineUserAdd } from 'react-icons/ai';
-import { MdSettingsApplications } from 'react-icons/md';
+import { MdSettingsApplications, MdCreateNewFolder } from 'react-icons/md';
+
 import Logo from '../assets/Logo';
 
 import List from '@material-ui/core/List';
@@ -27,6 +34,8 @@ import { makeStyles } from '@material-ui/styles';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { USER_LOGOUT, USER_REGISTER_RESET } from '../redux/user_slice/types';
+import { listAllRentals } from '../redux/rentals_slice/rentalActions';
+import { Hidden } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   toolbarMargin: { ...theme.mixins.toolbar, marginBottom: '3rem' },
@@ -43,11 +52,14 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('lg')]: {
       height: '5rem',
     },
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   tabContainer: {
     display: 'flex',
     marginLeft: 'auto',
     maxWidth: '800px',
+    marginTop: 10,
   },
   tab: {
     ...theme.typography.tab,
@@ -118,6 +130,22 @@ const useStyles = makeStyles(theme => ({
     textDecoration: 'none',
     textUnderline: 'none',
   },
+  searchInput: {
+    '& .MuiInputBase-root': {
+      backgroundColor: '#7494B8',
+      width: '13rem',
+    },
+    '& .MuiFormLabel-root': {
+      color: 'yellow',
+    },
+  },
+  searchForm: {
+    display: 'flex',
+    flexDirection: 'row',
+    minWidth: '20rem',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
 }));
 
 function ElevationScroll(props) {
@@ -136,12 +164,18 @@ const Header = ({ history }) => {
   const classes = useStyles();
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.down('xs'));
+  const { rentals } = useSelector(state => state.rentals);
   const [value, setValue] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
   const [openDrawer, setOpenDrawer] = useState(false);
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
+  const uniqueCitynames = rentals?.map(r => r.city);
+  const uniqueCities = Array.from(new Set(uniqueCitynames)).concat('all');
+
   const dispatch = useDispatch();
   const { userId, username } = useSelector(state => state.userLogin);
+
   const handleTabActiveChange = (e, updatedValue) => {
     e.preventDefault();
     setValue(updatedValue);
@@ -153,6 +187,20 @@ const Header = ({ history }) => {
     dispatch({ type: USER_REGISTER_RESET });
     history.push('/');
   };
+
+  const handleSearchInputChange = e => {
+    if (e.target.value === 'all') {
+      setSearchTerm('');
+    } else {
+      setSearchTerm(e.target.value.toLowerCase());
+    }
+  };
+
+  const handleSearchSubmit = e => {
+    e.preventDefault();
+    dispatch(listAllRentals(searchTerm));
+  };
+
   const tabs = (
     <>
       {userId ? (
@@ -161,18 +209,24 @@ const Header = ({ history }) => {
           value={value}
           onChange={handleTabActiveChange}
           className={classes.tabContainer}>
-          <NavLink to='/account' className={classes.tab}>
-            <MdSettingsApplications size={30} color='yellow' />
-            {username}'s Account
-          </NavLink>
-          <NavLink to='/rentals/new' className={classes.tab}>
-            <MdSettingsApplications size={30} color='yellow' />
-            Create Rental
-          </NavLink>
-          <NavLink to='/' onClick={logoutUser} className={classes.tab}>
-            <GiEgyptianWalk size={30} color='yellow' />
-            Logout
-          </NavLink>
+          <Tooltip title='Your account'>
+            <NavLink to='/account' className={classes.tab}>
+              <MdSettingsApplications size={30} color='yellow' />
+              <Hidden mdDown>{username}'s Account</Hidden>
+            </NavLink>
+          </Tooltip>
+          <Tooltip title='Create posting'>
+            <NavLink to='/rentals/new' className={classes.tab}>
+              <MdCreateNewFolder size={30} color='yellow' />
+              <Hidden mdDown>Create Rental</Hidden>
+            </NavLink>
+          </Tooltip>
+          <Tooltip title='Log out'>
+            <NavLink to='/' onClick={logoutUser} className={classes.tab}>
+              <GiEgyptianWalk size={30} color='yellow' />
+              <Hidden mdDown>Logout</Hidden>
+            </NavLink>
+          </Tooltip>
         </Tabs>
       ) : (
         <Tabs
@@ -180,18 +234,22 @@ const Header = ({ history }) => {
           value={value}
           onChange={handleTabActiveChange}
           className={classes.tabContainer}>
-          <NavLink to='/login' className={classes.tab}>
-            <IoMdLogIn size={30} color='yellow' />
-            Login
-          </NavLink>
+          <Tooltip title='Log in'>
+            <NavLink to='/login' className={classes.tab}>
+              <IoMdLogIn size={30} color='yellow' />
+              <Hidden mdDown>Login</Hidden>
+            </NavLink>
+          </Tooltip>
           {/* <NavLink to='/admin' className={classes.tab}>
             <MdSettingsApplications size={30} color='yellow' />
             Admin Route
           </NavLink> */}
-          <NavLink to='/register' className={classes.tab}>
-            <AiOutlineUserAdd size={30} color='yellow' />
-            Register
-          </NavLink>
+          <Tooltip title='Register'>
+            <NavLink to='/register' className={classes.tab}>
+              <AiOutlineUserAdd size={30} color='yellow' />
+              <Hidden mdDown>Register</Hidden>
+            </NavLink>
+          </Tooltip>
         </Tabs>
       )}
     </>
@@ -276,6 +334,37 @@ const Header = ({ history }) => {
                 <Logo />
               </Button>
             </NavLink>
+            {uniqueCities && (
+              <form onSubmit={handleSearchSubmit}>
+                <FormControl className={classes.searchForm}>
+                  <Autocomplete
+                    className={classes.searchInput}
+                    id='rental-search'
+                    disableClearable
+                    options={uniqueCities.map(option => option)}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        onChange={handleSearchInputChange}
+                        onBlur={handleSearchInputChange}
+                        className={classes.searchInput}
+                        label='Search rental by city'
+                        margin='normal'
+                        variant='outlined'
+                        InputProps={{ ...params.InputProps, type: 'search' }}
+                      />
+                    )}
+                  />
+                  <Button
+                    style={{ height: '3rem', marginTop: '.4rem' }}
+                    type='submit'
+                    variant='outlined'
+                    color='secondary'>
+                    Search
+                  </Button>
+                </FormControl>
+              </form>
+            )}
             {matches ? drawer : tabs}
           </Toolbar>
         </AppBar>
