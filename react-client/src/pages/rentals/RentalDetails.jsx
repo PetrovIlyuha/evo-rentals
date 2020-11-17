@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import VanillaTilt from 'vanilla-tilt';
 
 import { Grid, Hidden, makeStyles } from '@material-ui/core';
@@ -7,13 +6,10 @@ import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
 import BaseLayout from '../../components/ui_layout/BaseLayout';
 import Loading from '../../components/ui_layout/Loading';
-import { GiBed } from 'react-icons/gi';
-import { IoIosPerson } from 'react-icons/io';
 import { GiThermometerCold, GiHeatHaze, GiWaterSplash } from 'react-icons/gi';
 import { SiAirtable } from 'react-icons/si';
 import { CgSmartHomeWashMachine } from 'react-icons/cg';
 import { FaLayerGroup } from 'react-icons/fa';
-import { FaStoreAlt } from 'react-icons/fa';
 import {
   getBookingsById,
   getRentalById,
@@ -27,7 +23,11 @@ import {
 } from '../../redux/rentals_slice/types';
 import RentalInfo from './RentalInfo';
 import cogoToast from 'cogo-toast';
-import ExistingBookingsByLocation from '../../components/booking/ExistingBookingsByLocation';
+import LoginProposal from '../../components/rentals/LoginProposal';
+import YourPostingText from '../../components/rentals/YourPostingText';
+import RentalBookingsList from '../../components/rentals/RentalBookingsList';
+import OnwerDetailsSection from '../../components/rentals/OnwerDetailsSection';
+import LocationInfo from '../../components/rentals/LocationInfo';
 
 const useStyles = makeStyles(theme => ({
   '& .MuiGrid-root': {
@@ -50,35 +50,6 @@ const useStyles = makeStyles(theme => ({
       width: '90%',
       margin: '40px 10% 0 0',
     },
-  },
-  rentalRoomInfo: {
-    display: 'flex',
-    width: '40%',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    alignContent: 'center',
-    padding: '2.4rem',
-    backgroundColor: '#111f64',
-    backgroundImage:
-      'linear-gradient(45deg, #111f64 0%, #C850C0 46%, #FFCC70 100%)',
-    color: '#B4F0B9',
-    marginTop: '2rem',
-    [theme.breakpoints.down('md')]: {
-      width: '50%',
-    },
-    [theme.breakpoints.down('sm')]: {
-      width: '60%',
-    },
-    [theme.breakpoints.down('xs')]: {
-      width: '80%',
-      height: '100px',
-    },
-  },
-  ownerSection: {
-    padding: '20px 40px',
-    background: 'linear-gradient(to left, #8e9eab, #eef2f3)',
-    width: '47%',
-    marginBottom: 30,
   },
   rentalMapComponent: {
     margin: '-20px 0 40px 0',
@@ -134,6 +105,13 @@ const useStyles = makeStyles(theme => ({
       boxShadow: '2px 4px 10px rgba(0,0,0,0.2)',
     },
   },
+  contactPill: {
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    borderRadius: 10,
+    padding: '3px 5px',
+    marginRight: 10,
+    color: 'white',
+  },
 }));
 
 const RentalDetails = ({ match }) => {
@@ -148,8 +126,8 @@ const RentalDetails = ({ match }) => {
   const { bookings } = useSelector(state => state.bookingsByRentalID);
   const { owner } = useSelector(state => state.rentalOwner);
   const loginToken = localStorage.getItem('user-session-token');
-  console.log(loginToken);
-  const isOwner = userId === rentalByID?.owner;
+
+  const isOwner = userId === rentalByID?.owner?._id;
   const ownerDetails = owner?.owner || null;
   let city, street, rentalLocation;
   if (rentalByID) {
@@ -231,74 +209,11 @@ const RentalDetails = ({ match }) => {
               </Grid>
             </Hidden>
           </Grid>
-          <Grid item>
-            <Grid container>
-              <div className={classes.rentalRoomInfo}>
-                <Grid item lg={4} md={4} sm={4}>
-                  <Typography varinant='body2'>
-                    <GiBed size={40} />
-                    {rentalByID.numOfBeds}{' '}
-                    {rentalByID.numOfBeds > 1 ? 'Beds' : 'Bed'}
-                  </Typography>
-                </Grid>
-                <Grid item lg={4} md={4} sm={4}>
-                  <Typography varinant='body2'>
-                    <IoIosPerson size={40} /> {rentalByID.numOfGuests} Guests
-                  </Typography>
-                </Grid>
-                <Grid item lg={4} md={4} sm={4}>
-                  <Typography varinant='body2'>
-                    <FaStoreAlt size={40} /> {rentalByID.numOfRooms} Rooms
-                  </Typography>
-                </Grid>
-              </div>
-            </Grid>
-          </Grid>
-
-          <Grid container className={classes.ownerSection}>
-            <Grid item lg={12} md={12}>
-              <Typography variant='h3'>Owner Contacts</Typography>
-              <Typography variant='h4' style={{ marginTop: 20 }}>
-                <span
-                  style={{
-                    backgroundColor: 'rgba(0,0,0,0.4)',
-                    borderRadius: 10,
-                    padding: '3px 5px',
-                    marginRight: 10,
-                    color: 'white',
-                  }}>
-                  Phone:
-                </span>{' '}
-                {rentalByID.phone}
-              </Typography>
-              <Typography variant='h4' style={{ marginTop: 20 }}>
-                <span
-                  style={{
-                    backgroundColor: 'rgba(0,0,0,0.4)',
-                    borderRadius: 10,
-                    padding: '3px 5px',
-                    marginRight: 10,
-                    color: 'white',
-                  }}>
-                  Email:
-                </span>{' '}
-                {ownerDetails.email}
-              </Typography>
-              <Typography variant='h4' style={{ marginTop: 20 }}>
-                <span
-                  style={{
-                    backgroundColor: 'rgba(0,0,0,0.4)',
-                    borderRadius: 10,
-                    padding: '3px 5px',
-                    marginRight: 10,
-                    color: 'white',
-                  }}>
-                  Owner username:{' '}
-                </span>
-                {ownerDetails.username}
-              </Typography>
-            </Grid>
-          </Grid>
+          <LocationInfo rentalByID={rentalByID} />
+          <OnwerDetailsSection
+            ownerDetails={ownerDetails}
+            rentalByID={rentalByID}
+          />
           <Grid container justify='around' spacing={10}>
             <Grid
               item
@@ -308,50 +223,28 @@ const RentalDetails = ({ match }) => {
               className={classes.rentalMapComponent}>
               {rentalLocation && <Map location={rentalLocation} />}
             </Grid>
-            {!isOwner && loginToken !== null ? (
-              <Grid
-                item
-                lg={6}
-                md={6}
-                sm={12}
-                className={classes.bookrentalSection}>
-                <BookingReserve
-                  rentalByID={rentalByID}
-                  existingBookings={bookings}
-                />
-              </Grid>
+            {loginToken !== null ? (
+              !isOwner ? (
+                <Grid
+                  item
+                  lg={6}
+                  md={6}
+                  sm={12}
+                  className={classes.bookrentalSection}>
+                  <BookingReserve
+                    rentalByID={rentalByID}
+                    existingBookings={bookings}
+                  />
+                </Grid>
+              ) : (
+                <YourPostingText />
+              )
             ) : (
-              <Grid
-                item
-                lg={6}
-                md={6}
-                sm={12}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                }}>
-                <Typography variant='h3'>
-                  Please <Link to='/login'>Login</Link> or{' '}
-                  <Link to='/register'>Register</Link> new account to book any
-                  location! <br /> No Email Confirmation! <br /> Takes less than
-                  a minute!
-                </Typography>
-              </Grid>
+              <LoginProposal />
             )}
           </Grid>
           {bookings && bookings.length > 0 && !isOwner ? (
-            <Grid container spacing={10} style={{ marginBottom: 49 }}>
-              <Grid item lg={10} md={10}>
-                <Typography variant='h4' style={{ marginBottom: 20 }}>
-                  This location active bookings
-                </Typography>
-                <ExistingBookingsByLocation
-                  style={{ width: '120%', minHeight: '350px' }}
-                  bookings={bookings}
-                />
-              </Grid>
-            </Grid>
+            <RentalBookingsList bookings={bookings} />
           ) : (
             <Typography variant='h3'>
               Location has no active Bookings! Take an advantage!
