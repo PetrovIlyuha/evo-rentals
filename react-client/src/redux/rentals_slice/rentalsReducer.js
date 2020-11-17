@@ -23,6 +23,9 @@ import {
   BOOKING_BY_ID_REQUEST,
   BOOKING_BY_ID_SUCCESS,
   BOOKING_BY_ID_FAILURE,
+  RENTAL_OWNER_REQUEST,
+  RENTAL_OWNER_SUCCESS,
+  RENTAL_OWNER_FAILURE,
 } from './types';
 
 export const rentalsListReducer = (
@@ -170,6 +173,19 @@ export const bookingsByRentalIDReducer = (state = {}, { type, payload }) => {
       return { ...state, loading: false, bookings: payload, success: true };
     case BOOKING_BY_ID_FAILURE:
       return { error: 'No bookings for this location yet!' };
+    default:
+      return state;
+  }
+};
+
+export const getRentalOwnerReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case RENTAL_OWNER_REQUEST:
+      return { ...state, loading: true };
+    case RENTAL_OWNER_SUCCESS:
+      return { ...state, loading: false, owner: payload };
+    case RENTAL_OWNER_FAILURE:
+      return { ...state, loading: false, error: payload };
     default:
       return state;
   }
