@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     height: '20vh',
   },
 }));
-const RentalsHome = ({ history }) => {
+const RentalsHome = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { rentals: allRentals, loading } = useSelector(state => state.rentals);
@@ -144,7 +144,7 @@ const RentalsHome = ({ history }) => {
             .filter(rental => listedCategories.includes(rental.category))
             .filter(rental => rental.dailyPrice <= price)
             .map((rental, index) => {
-              const isOwner = userId === rental.owner;
+              const isOwner = userId === rental.owner._id;
               return (
                 <Grid item lg={3} md={3} xs={12} sm={6} key={index}>
                   <RentalCard rental={rental} isOwner={isOwner} />

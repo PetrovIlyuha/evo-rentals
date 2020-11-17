@@ -1,7 +1,9 @@
 import { Rental } from '../models/rentalModel.js';
 
 export const getAllRentals = async (req, res) => {
-  const data = await Rental.find({}).populate('owner');
+  const { city } = req.query;
+  const searchQuery = city ? { city } : {};
+  const data = await Rental.find(searchQuery).populate('owner');
   res.json(data);
 };
 
