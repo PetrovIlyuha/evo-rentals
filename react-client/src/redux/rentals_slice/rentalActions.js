@@ -22,12 +22,15 @@ import {
   BOOKING_BY_ID_REQUEST,
   BOOKING_BY_ID_SUCCESS,
   BOOKING_BY_ID_FAILURE,
+  RENTAL_OWNER_REQUEST,
+  RENTAL_OWNER_SUCCESS,
+  RENTAL_OWNER_FAILURE,
 } from './types';
 
-export const listAllRentals = () => async dispatch => {
+export const listAllRentals = (queryParam = '') => async dispatch => {
   try {
     dispatch({ type: RENTALS_LIST_REQUEST });
-    const { data } = await axios.get(`/api/v1/rentals`);
+    const { data } = await axios.get(`/api/v1/rentals?city=${queryParam}`);
     dispatch({ type: RENTALS_LIST_SUCCESS, payload: data });
   } catch (err) {
     dispatch({
@@ -74,6 +77,22 @@ export const getRentalById = id => async dispatch => {
   } catch (err) {
     dispatch({
       type: RENTAL_DETAILS_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const getRentalOwner = id => async dispatch => {
+  try {
+    dispatch({ type: RENTAL_OWNER_REQUEST });
+    const { data } = await axios.get(`/api/v1/rentals/${id}/owner`);
+    dispatch({ type: RENTAL_OWNER_SUCCESS, payload: data });
+  } catch (err) {
+    dispatch({
+      type: RENTAL_OWNER_FAILURE,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message
