@@ -4,10 +4,12 @@ const techViolet = '#0F0E4B';
 const techBlue = '#5C4DD5';
 const techYellow = '#CBDC64';
 const darkYellow = '#85C24F';
+const lightPaleBlue = '#E9EBF8';
 
 export default createMuiTheme({
   palette: {
     common: {
+      lightBg: `${lightPaleBlue}`,
       darkBlue: `${techViolet}`,
       lightBlue: `${techBlue}`,
       lightYellow: `${techYellow}`,
