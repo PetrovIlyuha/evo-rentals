@@ -8,6 +8,7 @@ import {
   createRentalReducer,
   currentUserBookingsList,
   getRentalOwnerReducer,
+  receivedBookingsReducer,
   rentalDetailsReducer,
   rentalsListReducer,
 } from './rentals_slice/rentalsReducer';
@@ -29,6 +30,7 @@ const reducer = combineReducers({
   userLogin: loginUserReducer,
   booking: createBookingReducer,
   bookingsByRentalID: bookingsByRentalIDReducer,
+  bookingsReceived: receivedBookingsReducer,
 });
 
 const initialState = {
