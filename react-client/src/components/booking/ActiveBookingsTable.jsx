@@ -11,6 +11,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import BookingDeletionConfirmModal from './BookingDeletionConfirmModal';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -56,7 +58,11 @@ const useStyles = makeStyles({
 
 function ActiveBookingsList({ bookings, history }) {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [showBooking, setShowBooking] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+
   const priceFilterDesc = data =>
     data.sort((a, b) => b.totalPrice - a.totalPrice);
   const priceFilterAsc = data =>
@@ -114,6 +120,16 @@ function ActiveBookingsList({ bookings, history }) {
       setFilters([...newFilters, dateEndFilterAsc]);
     }
   };
+  const removeBookingById = id => {
+    console.log(`booking with ${id} will be removed`);
+  };
+  // dispatch(removeBookingById(id));
+
+  const openModalForBooking = id => {
+    let currentBooking = bookings.filter(b => b._id === id);
+    setOpenModal(true);
+    setSelectedBooking(currentBooking[0]);
+  };
 
   return (
     <>
@@ -159,42 +175,68 @@ function ActiveBookingsList({ bookings, history }) {
                       : '⬆'}
                   </span>
                 </StyledTableCell>
+                <StyledTableCell align='right' onClick={setPriceFilters}>
+                  Cancel
+                </StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {activeFilters(bookings).map((booking, index) => (
-                <StyledTableRow
-                  key={index}
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => history.push(`/rental/${booking.rental._id}`)}>
-                  <StyledTableCell component='th' scope='row'>
-                    {firstUpperLetter(booking.rental.city)}{' '}
-                    {firstUpperLetter(booking.rental.street)}
-                  </StyledTableCell>
-                  <StyledTableCell
-                    component='th'
-                    scope='row'
-                    style={{ width: 80 }}>
-                    <img
-                      className={classes.image}
-                      src={booking.rental.image}
-                      alt='booking photograph'
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell component='th' scope='row' align='right'>
-                    {format(new Date(booking.startDate), 'dd MMMM yyyy')}
-                  </StyledTableCell>
-                  <StyledTableCell align='right'>
-                    {format(new Date(booking.endDate), 'dd MMMM yyyy')}
-                  </StyledTableCell>
-                  <StyledTableCell align='right'>
-                    $ {booking.totalPrice}
-                  </StyledTableCell>
-                </StyledTableRow>
+                <>
+                  <StyledTableRow key={index} style={{ cursor: 'pointer' }}>
+                    <StyledTableCell
+                      component='th'
+                      scope='row'
+                      onClick={() =>
+                        history.push(`/rental/${booking.rental._id}`)
+                      }>
+                      {firstUpperLetter(booking.rental.city)}{' '}
+                      {firstUpperLetter(booking.rental.street)}
+                    </StyledTableCell>
+                    <StyledTableCell
+                      component='th'
+                      onClick={() =>
+                        history.push(`/rental/${booking.rental._id}`)
+                      }
+                      scope='row'
+                      style={{ width: 80 }}>
+                      <img
+                        className={classes.image}
+                        src={booking.rental.image}
+                        alt='booking photograph'
+                      />
+                    </StyledTableCell>
+                    <StyledTableCell component='th' scope='row' align='right'>
+                      {format(new Date(booking.startDate), 'dd MMMM yyyy')}
+                    </StyledTableCell>
+                    <StyledTableCell align='right'>
+                      {format(new Date(booking.endDate), 'dd MMMM yyyy')}
+                    </StyledTableCell>
+                    <StyledTableCell align='right'>
+                      $ {booking.totalPrice}
+                    </StyledTableCell>
+                    <StyledTableCell align='right'>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => openModalForBooking(booking._id)}>
+                        Remove
+                      </Button>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+      )}
+      {selectedBooking && (
+        <BookingDeletionConfirmModal
+          booking={selectedBooking}
+          openModal={openModal}
+          setOpenModal={setOpenModal}
+          removeBooking={removeBookingById}
+        />
       )}
     </>
   );

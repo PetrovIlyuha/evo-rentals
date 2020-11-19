@@ -26,6 +26,9 @@ import {
   RENTAL_OWNER_REQUEST,
   RENTAL_OWNER_SUCCESS,
   RENTAL_OWNER_FAILURE,
+  RECEIVED_BOOKINGS_REQUEST,
+  RECEIVED_BOOKINGS_SUCCESS,
+  RECEIVED_BOOKINGS_FAILURE,
 } from './types';
 
 export const rentalsListReducer = (
@@ -186,6 +189,29 @@ export const getRentalOwnerReducer = (state = {}, { type, payload }) => {
       return { ...state, loading: false, owner: payload };
     case RENTAL_OWNER_FAILURE:
       return { ...state, loading: false, error: payload };
+    default:
+      return state;
+  }
+};
+
+export const receivedBookingsReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case RECEIVED_BOOKINGS_REQUEST:
+      return { ...state, loading: true };
+    case RECEIVED_BOOKINGS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        bookingsIncoming: payload,
+      };
+    case RECEIVED_BOOKINGS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: payload,
+      };
     default:
       return state;
   }
