@@ -47,7 +47,9 @@ const checkIfBookingIsValid = (potentailBooking, allRentalBookings) => {
 export const getMyBookings = async (req, res) => {
   const { userId } = req.body;
   try {
-    const data = await Booking.find({ user: userId }).populate('rental');
+    const data = await Booking.find({ user: userId })
+      .populate('rental')
+      .populate('user', '-password');
     res.status(200).json(data);
   } catch (err) {
     res.status(404).json({ error: 'No bookings for this user exists!' });
@@ -63,3 +65,19 @@ export const getAllBookingsById = async (req, res) => {
     res.status(404).json({ message: 'No bookings for this place yet!' });
   }
 };
+
+export const getBookingsReceived = async (req, res) => {
+  const { user } = res.locals;
+  try {
+    const rentals = await Rental.find({ owner: user }, '_id');
+    const rentalIds = rentals.map(i => i.id);
+    const bookings = await Booking.find({ rental: { $in: rentalIds } })
+      .populate('user')
+      .populate('rental');
+    return res.json(bookings);
+  } catch (err) {
+    return res.status(401).json({ message: 'Rentals was not found. Strange' });
+  }
+};
+
+export const removeBookingById = async (req, res) => {};
