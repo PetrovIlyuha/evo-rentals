@@ -9,10 +9,24 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { Button } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
+import {
+  priceFilterDesc,
+  priceFilterAsc,
+  dateStartFilterDesc,
+  dateStartFilterAsc,
+  dateEndFilterAsc,
+  dateEndFilterDesc,
+} from '../../utils/sortingFunctions.js';
+import cogoToast from 'cogo-toast';
+
 import BookingDeletionConfirmModal from './BookingDeletionConfirmModal';
+import { removeBookingById } from '../../redux/rentals_slice/rentalActions';
+import { useEffect } from 'react';
+import { REMOVE_BOOKING_RESET } from '../../redux/rentals_slice/types';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
@@ -56,25 +70,44 @@ const useStyles = makeStyles({
   },
 });
 
-function ActiveBookingsList({ bookings, history }) {
+function ActiveBookingsList({ bookings, history, placedByMe = false }) {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [showBooking, setShowBooking] = useState(true);
+  const [showBooking, setShowBooking] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const { success: bookingDeletionSuccess, error } = useSelector(
+    state => state.deleteBooking,
+  );
 
-  const priceFilterDesc = data =>
-    data.sort((a, b) => b.totalPrice - a.totalPrice);
-  const priceFilterAsc = data =>
-    data.sort((a, b) => a.totalPrice - b.totalPrice);
-  const dateStartFilterDesc = data =>
-    data.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-  const dateStartFilterAsc = data =>
-    data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-  const dateEndFilterAsc = data =>
-    data.sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
-  const dateEndFilterDesc = data =>
-    data.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+  console.log(error);
+
+  useEffect(() => {
+    if (bookingDeletionSuccess) {
+      cogoToast
+        .loading('Checking for possibility to revert operation')
+        .then(() => {
+          cogoToast.success('Success! Booking canceled');
+        });
+      setTimeout(() => {
+        dispatch({ type: REMOVE_BOOKING_RESET });
+      }, 1400);
+    }
+  }, [dispatch, bookingDeletionSuccess]);
+
+  useEffect(() => {
+    setOpenModal(false);
+    if (error) {
+      cogoToast
+        .loading('Performing checks on dates due to our policy')
+        .then(() => {
+          cogoToast.error(error);
+        });
+      setTimeout(() => {
+        dispatch({ type: REMOVE_BOOKING_RESET });
+      }, 1000);
+    }
+  }, [dispatch, error]);
 
   const [filters, setFilters] = useState([dateStartFilterAsc, priceFilterAsc]);
 
@@ -120,10 +153,16 @@ function ActiveBookingsList({ bookings, history }) {
       setFilters([...newFilters, dateEndFilterAsc]);
     }
   };
-  const removeBookingById = id => {
+  const removeBooking = id => {
     console.log(`booking with ${id} will be removed`);
+    dispatch(removeBookingById(id));
+    setOpenModal(false);
   };
-  // dispatch(removeBookingById(id));
+
+  const moveBookingToHistory = id => {
+    alert(`BOoking with ${id} will be in history from now`);
+    setOpenModal(false);
+  };
 
   const openModalForBooking = id => {
     let currentBooking = bookings.filter(b => b._id === id);
@@ -216,12 +255,27 @@ function ActiveBookingsList({ bookings, history }) {
                       $ {booking.totalPrice}
                     </StyledTableCell>
                     <StyledTableCell align='right'>
-                      <Button
-                        variant='contained'
-                        color='secondary'
-                        onClick={() => openModalForBooking(booking._id)}>
-                        Remove
-                      </Button>
+                      {!placedByMe ? (
+                        moment().diff(moment(booking.endDate), 'days') > 1 ? (
+                          <Button
+                            variant='contained'
+                            color='secondary'
+                            onClick={() => openModalForBooking(booking._id)}>
+                            Move to history
+                          </Button>
+                        ) : (
+                          <Typography variant='h3' style={{ color: 'white' }}>
+                            Active
+                          </Typography>
+                        )
+                      ) : (
+                        <Button
+                          variant='contained'
+                          color='secondary'
+                          onClick={() => openModalForBooking(booking._id)}>
+                          Cancel & Refund
+                        </Button>
+                      )}
                     </StyledTableCell>
                   </StyledTableRow>
                 </>
@@ -234,8 +288,10 @@ function ActiveBookingsList({ bookings, history }) {
         <BookingDeletionConfirmModal
           booking={selectedBooking}
           openModal={openModal}
+          placedByMe={placedByMe}
           setOpenModal={setOpenModal}
-          removeBooking={removeBookingById}
+          moveBookingToHistory={moveBookingToHistory}
+          removeBooking={removeBooking}
         />
       )}
     </>
