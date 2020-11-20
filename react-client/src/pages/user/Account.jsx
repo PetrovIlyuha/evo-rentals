@@ -36,7 +36,7 @@ const Account = ({ history }) => {
   const { bookings } = useSelector(state => state.authUserBookings);
   const { bookingsIncoming } = useSelector(state => state.bookingsReceived);
 
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   useEffect(() => {
     dispatch(showMyRentals(userId));
     dispatch(showMyBookings(userId));
@@ -104,7 +104,7 @@ const Account = ({ history }) => {
         </Grid>
         <Grid item lg={10} md={10} xs={10} sm={10}>
           <Box margin={3}>
-            <ActiveBookingsList bookings={bookings} />
+            <ActiveBookingsList bookings={bookings} placedByMe={true} />
           </Box>
         </Grid>
       </Grid>
