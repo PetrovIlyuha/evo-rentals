@@ -25,6 +25,12 @@ import {
   RENTAL_OWNER_REQUEST,
   RENTAL_OWNER_SUCCESS,
   RENTAL_OWNER_FAILURE,
+  RECEIVED_BOOKINGS_REQUEST,
+  RECEIVED_BOOKINGS_SUCCESS,
+  RECEIVED_BOOKINGS_FAILURE,
+  REMOVE_BOOKING_REQUEST,
+  REMOVE_BOOKING_SUCCESS,
+  REMOVE_BOOKING_FAILURE,
 } from './types';
 
 export const listAllRentals = (queryParam = '') => async dispatch => {
@@ -186,6 +192,50 @@ export const getBookingsById = rentalId => async dispatch => {
   } catch (err) {
     dispatch({
       type: BOOKING_BY_ID_FAILURE,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const getBookingsReceived = () => async dispatch => {
+  const token = localStorage.getItem('user-session-token');
+  try {
+    dispatch({ type: RECEIVED_BOOKINGS_REQUEST });
+    const { data } = await axios.get(`/api/v1/bookings/received-bookings`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch({ type: RECEIVED_BOOKINGS_SUCCESS, payload: data });
+  } catch (err) {
+    dispatch({
+      type: RECEIVED_BOOKINGS_FAILURE,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const removeBookingById = bookingId => async dispatch => {
+  const token = localStorage.getItem('user-session-token');
+  try {
+    dispatch({ type: REMOVE_BOOKING_REQUEST });
+    const { data } = await axios.delete(`/api/v1/bookings/${bookingId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch({ type: REMOVE_BOOKING_SUCCESS, payload: data });
+  } catch (err) {
+    dispatch({
+      type: REMOVE_BOOKING_FAILURE,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message
