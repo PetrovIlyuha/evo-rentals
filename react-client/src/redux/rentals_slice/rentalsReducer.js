@@ -29,6 +29,10 @@ import {
   RECEIVED_BOOKINGS_REQUEST,
   RECEIVED_BOOKINGS_SUCCESS,
   RECEIVED_BOOKINGS_FAILURE,
+  REMOVE_BOOKING_REQUEST,
+  REMOVE_BOOKING_SUCCESS,
+  REMOVE_BOOKING_FAILURE,
+  REMOVE_BOOKING_RESET,
 } from './types';
 
 export const rentalsListReducer = (
@@ -212,6 +216,32 @@ export const receivedBookingsReducer = (state = {}, { type, payload }) => {
         success: false,
         error: payload,
       };
+    default:
+      return state;
+  }
+};
+
+export const removeBookingReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case REMOVE_BOOKING_REQUEST:
+      return { loading: true };
+    case REMOVE_BOOKING_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        removedBooking: payload,
+        error: false,
+      };
+    case REMOVE_BOOKING_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+      };
+    case REMOVE_BOOKING_RESET:
+      return {};
     default:
       return state;
   }
