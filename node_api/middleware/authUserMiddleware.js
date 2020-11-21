@@ -37,6 +37,7 @@ function parseToken(token) {
       token.split(' ')[1],
       process.env.JWT_SECRET,
     );
+
     return { decodedToken };
   } catch (err) {
     return { error: err.message };
