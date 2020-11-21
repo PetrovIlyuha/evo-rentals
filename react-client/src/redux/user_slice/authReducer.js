@@ -33,7 +33,7 @@ let loginInitialState;
 if (localStorage.getItem('user-session-token')) {
   jwt.verify(
     localStorage.getItem('user-session-token'),
-    'B3Qfnrh5jWQEJGuzJBXmGu62eH5MFHeLNppmqWs4stR',
+    process.env.REACT_APP_JWT_SECRET,
     function (err, decoded) {
       if (err) {
         throw new Error('Problem with decoding token');
