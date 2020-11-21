@@ -30,7 +30,7 @@ const rentalSchema = new mongoose.Schema({
   dailyPrice: { type: Number, required: true },
   description: { type: String, required: true },
   phone: { type: String, required: true },
-  views: { type: Number },
+  views: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
