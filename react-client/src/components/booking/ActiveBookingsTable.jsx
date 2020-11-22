@@ -80,8 +80,6 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
     state => state.deleteBooking,
   );
 
-  console.log(error);
-
   useEffect(() => {
     if (bookingDeletionSuccess) {
       cogoToast
@@ -160,7 +158,7 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
   };
 
   const moveBookingToHistory = id => {
-    alert(`BOoking with ${id} will be in history from now`);
+    alert(`Booking with ${id} will be in history from now`);
     setOpenModal(false);
   };
 
