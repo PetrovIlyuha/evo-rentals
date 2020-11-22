@@ -59,6 +59,8 @@ const ConfirmationModal = ({
   removeBooking,
   openModal,
   setOpenModal,
+  placedByMe,
+  moveBookingToHistory,
 }) => {
   const classes = useStyles();
   const onCloseModal = () => setOpenModal(false);
@@ -101,14 +103,25 @@ const ConfirmationModal = ({
         </Grid>
         <Divider />
         <Grid item md={6}>
-          <Button
-            color='primary'
-            variant='contained'
-            className={classes.modalConfirmBtn}
-            onClick={() => removeBooking(booking._id)}
-            type='submit'>
-            Delete Booking
-          </Button>
+          {placedByMe ? (
+            <Button
+              color='primary'
+              variant='contained'
+              className={classes.modalConfirmBtn}
+              onClick={() => removeBooking(booking._id)}
+              type='submit'>
+              Delete and claim Refund
+            </Button>
+          ) : (
+            <Button
+              color='primary'
+              variant='contained'
+              className={classes.modalConfirmBtn}
+              onClick={() => moveBookingToHistory(booking._id)}
+              type='submit'>
+              Move to history
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Modal>
