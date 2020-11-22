@@ -29,9 +29,13 @@ const RentalsHome = () => {
   const { rentals: allRentals, loading } = useSelector(state => state.rentals);
   const { userId } = useSelector(state => state.userLogin);
 
-  const [price, setPrice] = useState(
-    allRentals?.reduce((acc, item) => Math.max(item.dailyPrice, acc), 0),
-  );
+  const [price, setPrice] = useState(0);
+
+  useEffect(() => {
+    setPrice(
+      allRentals?.reduce((acc, item) => Math.max(item.dailyPrice, acc), 0),
+    );
+  }, [allRentals]);
 
   const handleSliderChange = (event, newValue) => {
     setPrice(newValue);
