@@ -19,7 +19,7 @@ router.get('/rentals/:id/owner', getRentalOwner);
 
 router.post('/rentals', authUserMiddleware, createRental);
 
-router.delete('/rentals/:id', removeRentalById);
+router.delete('/rentals/:id', authUserMiddleware, removeRentalById);
 
 router.patch('/rentals/:id', updateRentalById);
 
