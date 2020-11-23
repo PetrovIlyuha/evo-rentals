@@ -11,6 +11,9 @@ import RegisterPage from './pages/user/RegisterPage';
 import Account from './pages/user/Account';
 import AdminPage from './pages/admin/AdminPage';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { MapProvider } from './context/MapProvider';
 
 function App() {
@@ -30,6 +33,7 @@ function App() {
           </MapProvider>
         </Switch>
       </Router>
+      <ToastContainer />
     </ThemeProvider>
   );
 }
