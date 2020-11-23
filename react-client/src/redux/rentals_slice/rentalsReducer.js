@@ -33,6 +33,9 @@ import {
   REMOVE_BOOKING_SUCCESS,
   REMOVE_BOOKING_FAILURE,
   REMOVE_BOOKING_RESET,
+  RENTAL_DELETE_REQUEST,
+  RENTAL_DELETE_SUCCESS,
+  RENTAL_DELETE_FAILURE,
 } from './types';
 
 export const rentalsListReducer = (
@@ -242,6 +245,13 @@ export const removeBookingReducer = (state = {}, { type, payload }) => {
       };
     case REMOVE_BOOKING_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+
+export const deleteRentalReducer = (state = {}, { type, payload }) => {
+  switch (type) {
     default:
       return state;
   }
