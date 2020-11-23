@@ -4,16 +4,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import BaseLayout from '../../components/ui_layout/BaseLayout';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/styles';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import RentalCard from '../rentals/RentalCard';
 
 import {
+  deleteBookingById,
   getBookingsReceived,
   showMyBookings,
   showMyRentals,
 } from '../../redux/rentals_slice/rentalActions';
 import Loading from '../../components/ui_layout/Loading';
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Button, IconButton, Typography } from '@material-ui/core';
 import ActiveBookingsList from '../../components/booking/ActiveBookingsTable';
 import BookingsStats from '../../components/booking/BookingsStats';
 
@@ -32,7 +35,7 @@ const Account = ({ history }) => {
   const { rentals, loading } = useSelector(
     state => state.activeUserRentalsList,
   );
-  const { userId } = useSelector(state => state.userLogin);
+  const { userId, username } = useSelector(state => state.userLogin);
   const { bookings } = useSelector(state => state.authUserBookings);
   const { bookingsIncoming } = useSelector(state => state.bookingsReceived);
 
@@ -50,6 +53,9 @@ const Account = ({ history }) => {
   return (
     <BaseLayout>
       <Grid container justify='center' align='center' spacing={3}>
+        <Grid item spacing={2} md={8}>
+          <Typography variant='h1'>{username}'s Dashboard</Typography>
+        </Grid>
         <Grid item spacing={4} md={12}>
           <Typography variant='h2'>My Posted Rentals</Typography>
           <Button
@@ -66,6 +72,29 @@ const Account = ({ history }) => {
             return (
               <Grid item lg={3} md={3} xs={12} sm={6} key={index}>
                 <RentalCard rental={rental} />
+                <IconButton
+                  aria-label='delete'
+                  style={{
+                    marginLeft: '80%',
+                    fontSize: '1.8rem',
+                    color: 'red',
+                  }}
+                  size='small'>
+                  <Tooltip title='Remove posting?'>
+                    <DeleteIcon
+                      fontSize='inherit'
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            `Rental will be removed from our Database? Are You sure?`,
+                          )
+                        ) {
+                          dispatch(deleteBookingById(rental._id));
+                        }
+                      }}
+                    />
+                  </Tooltip>
+                </IconButton>
               </Grid>
             );
           })}
