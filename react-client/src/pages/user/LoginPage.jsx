@@ -3,13 +3,6 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import cogoToast from 'cogo-toast';
 
-// cogo usage
-// cogoToast.success('This is a success message');
-// cogoToast.info('This is a info message');
-// cogoToast.loading('This is a loading message');
-// cogoToast.warn('This is a warn message');
-// cogoToast.error('This is a error message');
-
 import BaseLayout from '../../components/ui_layout/BaseLayout';
 import Loading from '../../components/ui_layout/Loading';
 import Grid from '@material-ui/core/Grid';
