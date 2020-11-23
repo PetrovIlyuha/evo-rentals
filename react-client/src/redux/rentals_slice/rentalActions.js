@@ -31,6 +31,9 @@ import {
   REMOVE_BOOKING_REQUEST,
   REMOVE_BOOKING_SUCCESS,
   REMOVE_BOOKING_FAILURE,
+  RENTAL_DELETE_REQUEST,
+  RENTAL_DELETE_SUCCESS,
+  RENTAL_DELETE_FAILURE,
 } from './types';
 
 export const listAllRentals = (queryParam = '') => async dispatch => {
@@ -236,6 +239,28 @@ export const removeBookingById = bookingId => async dispatch => {
   } catch (err) {
     dispatch({
       type: REMOVE_BOOKING_FAILURE,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
+
+export const deleteBookingById = rentalId => async dispatch => {
+  const token = localStorage.getItem('user-session-token');
+  try {
+    dispatch({ type: RENTAL_DELETE_REQUEST });
+    const { data } = await axios.delete(`/api/v1/rentals/${rentalId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    dispatch({ type: RENTAL_DELETE_SUCCESS, payload: data });
+  } catch (err) {
+    dispatch({
+      type: RENTAL_DELETE_FAILURE,
       payload:
         err.response && err.response.data.message
           ? err.response.data.message
