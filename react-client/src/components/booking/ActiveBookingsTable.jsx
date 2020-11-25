@@ -21,8 +21,7 @@ import {
   dateEndFilterAsc,
   dateEndFilterDesc,
 } from '../../utils/sortingFunctions.js';
-import cogoToast from 'cogo-toast';
-
+import { ToastContainer, toast } from 'react-toastify';
 import BookingDeletionConfirmModal from './BookingDeletionConfirmModal';
 import { removeBookingById } from '../../redux/rentals_slice/rentalActions';
 import { useEffect } from 'react';
@@ -77,16 +76,12 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
   const [openModal, setOpenModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const { success: bookingDeletionSuccess, error } = useSelector(
-    state => state.deleteBooking,
+    state => state.deletedBooking,
   );
 
   useEffect(() => {
     if (bookingDeletionSuccess) {
-      cogoToast
-        .loading('Checking for possibility to revert operation')
-        .then(() => {
-          cogoToast.success('Success! Booking canceled');
-        });
+      toast.success('Success! Booking canceled');
       setTimeout(() => {
         dispatch({ type: REMOVE_BOOKING_RESET });
       }, 1400);
@@ -96,18 +91,26 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
   useEffect(() => {
     setOpenModal(false);
     if (error) {
-      cogoToast
-        .loading('Performing checks on dates due to our policy')
-        .then(() => {
-          cogoToast.error(error);
-        });
-      setTimeout(() => {
-        dispatch({ type: REMOVE_BOOKING_RESET });
-      }, 1000);
+      console.log(error);
+      toast.error(error);
     }
+    setTimeout(() => {
+      dispatch({ type: REMOVE_BOOKING_RESET });
+    }, 1000);
   }, [dispatch, error]);
 
-  const [filters, setFilters] = useState([dateStartFilterAsc, priceFilterAsc]);
+  const dateRelevanceFilter = placedByMe
+    ? bookings =>
+        bookings.filter(booking =>
+          moment().diff(moment(booking.endDate), 'days') > 0 ? null : booking,
+        )
+    : bookings => bookings;
+
+  const [filters, setFilters] = useState([
+    dateStartFilterAsc,
+    priceFilterAsc,
+    dateRelevanceFilter,
+  ]);
 
   let pipe = (...funcs) => x => funcs.reduce((v, f) => f(v), x);
 
@@ -270,8 +273,17 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
                         <Button
                           variant='contained'
                           color='secondary'
+                          disabled={
+                            moment(booking.startDate).diff(moment(), 'days') <
+                              2 ||
+                            moment().diff(moment(booking.startDate), 'days') > 0
+                          }
                           onClick={() => openModalForBooking(booking._id)}>
-                          Cancel & Refund
+                          {moment(booking.startDate).diff(moment(), 'days') <
+                            2 ||
+                          moment().diff(moment(booking.startDate), 'days') > 0
+                            ? "Can't be removed"
+                            : 'Cancel & Refund'}
                         </Button>
                       )}
                     </StyledTableCell>
@@ -280,6 +292,7 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
               ))}
             </TableBody>
           </Table>
+          <ToastContainer />
         </TableContainer>
       )}
       {selectedBooking && (
