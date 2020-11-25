@@ -247,7 +247,7 @@ export const removeBookingById = bookingId => async dispatch => {
   }
 };
 
-export const deleteBookingById = rentalId => async dispatch => {
+export const deleteRentalById = rentalId => async dispatch => {
   const token = localStorage.getItem('user-session-token');
   try {
     dispatch({ type: RENTAL_DELETE_REQUEST });

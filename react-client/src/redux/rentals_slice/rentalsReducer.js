@@ -252,6 +252,12 @@ export const removeBookingReducer = (state = {}, { type, payload }) => {
 
 export const deleteRentalReducer = (state = {}, { type, payload }) => {
   switch (type) {
+    case RENTAL_DELETE_REQUEST:
+      return { ...state, loading: true };
+    case RENTAL_DELETE_SUCCESS:
+      return { ...state, loading: false, success: true, deletedRetal: payload };
+    case RENTAL_DELETE_FAILURE:
+      return { ...state, loading: false, success: false, error: payload };
     default:
       return state;
   }
