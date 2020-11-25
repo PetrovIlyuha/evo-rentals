@@ -90,13 +90,13 @@ export const deleteBooking = async (req, res) => {
         error: 'You have not created this booking to be able to delete it!',
       });
     }
-    if (moment(booking.startDate).diff(moment(), 'days') > 2) {
+    if (moment(booking.startDate).diff(moment(), 'days') < 2) {
       await booking.remove();
       return res.json({ id: bookingId });
     } else {
       return res.status(403).json({
         message:
-          'Our policy restricts you from reclaiming the payment when the current date is less then 2 days to arrival date!',
+          "You can't reclaiming the payment when current date is sooner than 2 days before arrival date!",
       });
     }
   } catch (err) {
