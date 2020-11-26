@@ -241,7 +241,7 @@ export const removeBookingReducer = (state = {}, { type, payload }) => {
         ...state,
         loading: false,
         success: false,
-        error: true,
+        error: payload,
       };
     case REMOVE_BOOKING_RESET:
       return {};
