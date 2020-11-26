@@ -91,13 +91,14 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
   useEffect(() => {
     setOpenModal(false);
     if (error) {
-      console.log(error);
       toast.error(error);
     }
-    setTimeout(() => {
-      dispatch({ type: REMOVE_BOOKING_RESET });
-    }, 1000);
-  }, [dispatch, error]);
+    return () => {
+      setTimeout(() => {
+        dispatch({ type: REMOVE_BOOKING_RESET });
+      }, 1000);
+    };
+  }, [error, dispatch]);
 
   const dateRelevanceFilter = placedByMe
     ? bookings =>
@@ -155,7 +156,6 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
     }
   };
   const removeBooking = id => {
-    console.log(`booking with ${id} will be removed`);
     dispatch(removeBookingById(id));
     setOpenModal(false);
   };
