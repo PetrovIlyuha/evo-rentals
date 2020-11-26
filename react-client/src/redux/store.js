@@ -7,6 +7,7 @@ import {
   createBookingReducer,
   createRentalReducer,
   currentUserBookingsList,
+  deleteRentalReducer,
   getRentalOwnerReducer,
   receivedBookingsReducer,
   removeBookingReducer,
@@ -32,7 +33,8 @@ const reducer = combineReducers({
   booking: createBookingReducer,
   bookingsByRentalID: bookingsByRentalIDReducer,
   bookingsReceived: receivedBookingsReducer,
-  deleteBooking: removeBookingReducer,
+  deletedBooking: removeBookingReducer,
+  deletedRental: deleteRentalReducer,
 });
 
 const initialState = {
