@@ -10,6 +10,7 @@ const bookingSchema = new mongoose.Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   rental: { type: Schema.Types.ObjectId, ref: 'Rental', required: true },
   createdAt: { type: Date, default: Date.now },
+  history: { type: Boolean, default: false },
 });
 
 export const Booking = mongoose.model('Booking', bookingSchema);
