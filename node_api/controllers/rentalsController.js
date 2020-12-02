@@ -88,7 +88,6 @@ export const removeRentalById = async (req, res) => {
   try {
     const rental = await Rental.findById(id).populate('owner');
     const bookings = await Booking.find({ rental });
-    console.log(bookings);
     if (user.id !== rental.owner.id) {
       res.status(403).json({
         message:
