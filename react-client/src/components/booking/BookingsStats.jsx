@@ -8,11 +8,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650,
+    [theme.breakpoints.down('sm')]: {
+      minWidth: 400,
+    },
   },
-});
+}));
 
 const StyledTableCell = withStyles(theme => ({
   head: {
