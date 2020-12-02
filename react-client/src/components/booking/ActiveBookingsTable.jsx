@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 import { format } from 'date-fns';
-import { firstUpperLetter } from '../../utils/stringFunctions';
+import { ToastContainer, toast } from 'react-toastify';
+import { withRouter } from 'react-router-dom';
+
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -10,28 +14,22 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Button, Typography } from '@material-ui/core';
-import { withRouter } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
-import {
-  priceFilterDesc,
-  priceFilterAsc,
-  dateStartFilterDesc,
-  dateStartFilterAsc,
-  dateEndFilterAsc,
-  dateEndFilterDesc,
-} from '../../utils/sortingFunctions.js';
-import { ToastContainer, toast } from 'react-toastify';
+
+import { firstUpperLetter } from '../../utils/stringFunctions';
+import { useBookingFilters } from '../../hooks/useBookingFilters';
 import BookingDeletionConfirmModal from './BookingDeletionConfirmModal';
-import { removeBookingById } from '../../redux/rentals_slice/rentalActions';
-import { useEffect } from 'react';
+
 import { REMOVE_BOOKING_RESET } from '../../redux/rentals_slice/types';
+import { removeBookingById } from '../../redux/rentals_slice/rentalActions';
 
 const StyledTableCell = withStyles(theme => ({
   head: {
     backgroundColor: theme.palette.common.darkBlue,
     color: theme.palette.common.darkYellow,
     fontSize: 20,
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 10,
+    },
   },
   body: {
     fontSize: 15,
@@ -39,6 +37,9 @@ const StyledTableCell = withStyles(theme => ({
     color: 'white',
     borderRight: '2px solid white',
     borderRadius: '10px',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 10,
+    },
   },
 }))(TableCell);
 
@@ -55,9 +56,12 @@ const StyledTableRow = withStyles(theme => ({
   },
 }))(TableRow);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 700,
+    [theme.breakpoints.down('sm')]: {
+      minWidth: 400,
+    },
   },
   image: {
     width: '150%',
@@ -67,7 +71,7 @@ const useStyles = makeStyles({
       transform: 'scale(3.5)',
     },
   },
-});
+}));
 
 function ActiveBookingsList({ bookings, history, placedByMe = false }) {
   const classes = useStyles();
@@ -100,61 +104,14 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
     };
   }, [error, dispatch]);
 
-  const dateRelevanceFilter = placedByMe
-    ? bookings =>
-        bookings.filter(booking =>
-          moment().diff(moment(booking.endDate), 'days') > 0 ? null : booking,
-        )
-    : bookings => bookings;
+  const {
+    filters,
+    setArrivalDateFilters,
+    setDepartureDateFilters,
+    setPriceFilters,
+    activeFilters,
+  } = useBookingFilters(placedByMe);
 
-  const [filters, setFilters] = useState([
-    dateStartFilterAsc,
-    priceFilterAsc,
-    dateRelevanceFilter,
-  ]);
-
-  let pipe = (...funcs) => x => funcs.reduce((v, f) => f(v), x);
-
-  let activeFilters = pipe(...filters);
-
-  const setArrivalDateFilters = () => {
-    const dateAscInFilters = filters.find(
-      fn => fn.name === 'dateStartFilterAsc',
-    );
-    if (dateAscInFilters) {
-      let newFilters = filters.filter(f => f.name !== 'dateStartFilterAsc');
-      setFilters([...newFilters, dateStartFilterDesc]);
-    } else {
-      let newFilters = filters.filter(f => f.name !== 'dateStartFilterDesc');
-      setFilters([...newFilters, dateStartFilterAsc]);
-    }
-  };
-
-  const setPriceFilters = () => {
-    const priceAscendingInFilters = filters.find(
-      fn => fn.name === 'priceFilterAsc',
-    );
-    if (priceAscendingInFilters) {
-      let newFilters = filters.filter(f => f.name !== 'priceFilterAsc');
-      setFilters([...newFilters, priceFilterDesc]);
-    } else {
-      let newFilters = filters.filter(f => f.name !== 'priceFilterDesc');
-      setFilters([...newFilters, priceFilterAsc]);
-    }
-  };
-
-  const setDepartureDateFilters = () => {
-    const departDateAscInFilters = filters.find(
-      fn => fn.name === 'dateEndFilterAsc',
-    );
-    if (departDateAscInFilters) {
-      let newFilters = filters.filter(f => f.name !== 'dateEndFilterAsc');
-      setFilters([...newFilters, dateEndFilterDesc]);
-    } else {
-      let newFilters = filters.filter(f => f.name !== 'dateEndFilterDesc');
-      setFilters([...newFilters, dateEndFilterAsc]);
-    }
-  };
   const removeBooking = id => {
     dispatch(removeBookingById(id));
     setOpenModal(false);
