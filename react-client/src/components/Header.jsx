@@ -46,6 +46,9 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       backgroundColor: 'transparent',
     },
+    [theme.breakpoints.down('sm')]: {
+      width: 100,
+    },
   },
   appBar: {
     zIndex: theme.zIndex.modal + 1,
@@ -163,7 +166,7 @@ function ElevationScroll(props) {
 const Header = ({ history }) => {
   const classes = useStyles();
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down('xs'));
+  const matches = useMediaQuery(theme.breakpoints.down('sm'));
   const { rentals } = useSelector(state => state.rentals);
   const [value, setValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
@@ -287,13 +290,33 @@ const Header = ({ history }) => {
             ))
           ) : (
             <>
+              <Link to='/'>
+                <ListItem divider button>
+                  <ListItemText
+                    className={classes.drawerItem}
+                    disableTypography
+                    onClick={() => setOpenDrawer(!openDrawer)}>
+                    Home
+                  </ListItemText>
+                </ListItem>
+              </Link>
               <Link to='/account'>
                 <ListItem divider button>
                   <ListItemText
                     className={classes.drawerItem}
                     disableTypography
                     onClick={() => setOpenDrawer(!openDrawer)}>
-                    Your Account
+                    Dashboard
+                  </ListItemText>
+                </ListItem>
+              </Link>
+              <Link to='/rentals/new' className={classes.tab}>
+                <ListItem divider button>
+                  <ListItemText
+                    className={classes.drawerItem}
+                    disableTypography
+                    onClick={() => setOpenDrawer(!openDrawer)}>
+                    Create Rental
                   </ListItemText>
                 </ListItem>
               </Link>
@@ -329,11 +352,13 @@ const Header = ({ history }) => {
       <ElevationScroll>
         <AppBar position='fixed' color='primary' className={classes.appBar}>
           <Toolbar disableGutters>
-            <NavLink to='/'>
-              <Button disableRipple className={classes.logo}>
-                <Logo />
-              </Button>
-            </NavLink>
+            {!matches && (
+              <NavLink to='/'>
+                <Button disableRipple className={classes.logo}>
+                  <Logo />
+                </Button>
+              </NavLink>
+            )}
             {uniqueCities && (
               <form onSubmit={handleSearchSubmit}>
                 <FormControl className={classes.searchForm}>
