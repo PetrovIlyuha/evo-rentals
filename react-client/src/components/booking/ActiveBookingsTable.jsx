@@ -179,73 +179,70 @@ function ActiveBookingsList({ bookings, history, placedByMe = false }) {
             </TableHead>
             <TableBody>
               {activeFilters(bookings).map((booking, index) => (
-                <>
-                  <StyledTableRow key={index} style={{ cursor: 'pointer' }}>
-                    <StyledTableCell
-                      component='th'
-                      scope='row'
-                      onClick={() =>
-                        history.push(`/rental/${booking.rental._id}`)
-                      }>
-                      {firstUpperLetter(booking.rental.city)}{' '}
-                      {firstUpperLetter(booking.rental.street)}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      component='th'
-                      onClick={() =>
-                        history.push(`/rental/${booking.rental._id}`)
-                      }
-                      scope='row'
-                      style={{ width: 80 }}>
-                      <img
-                        className={classes.image}
-                        src={booking.rental.image}
-                        alt='booking photograph'
-                      />
-                    </StyledTableCell>
-                    <StyledTableCell component='th' scope='row' align='right'>
-                      {format(new Date(booking.startDate), 'dd MMMM yyyy')}
-                    </StyledTableCell>
-                    <StyledTableCell align='right'>
-                      {format(new Date(booking.endDate), 'dd MMMM yyyy')}
-                    </StyledTableCell>
-                    <StyledTableCell align='right'>
-                      $ {booking.totalPrice}
-                    </StyledTableCell>
-                    <StyledTableCell align='right'>
-                      {!placedByMe ? (
-                        moment().diff(moment(booking.endDate), 'days') > 1 ? (
-                          <Button
-                            variant='contained'
-                            color='secondary'
-                            onClick={() => openModalForBooking(booking._id)}>
-                            Move to history
-                          </Button>
-                        ) : (
-                          <Typography variant='h3' style={{ color: 'white' }}>
-                            Active
-                          </Typography>
-                        )
-                      ) : (
+                <StyledTableRow key={index} style={{ cursor: 'pointer' }}>
+                  <StyledTableCell
+                    component='th'
+                    scope='row'
+                    onClick={() =>
+                      history.push(`/rental/${booking.rental._id}`)
+                    }>
+                    {firstUpperLetter(booking.rental.city)}{' '}
+                    {firstUpperLetter(booking.rental.street)}
+                  </StyledTableCell>
+                  <StyledTableCell
+                    component='th'
+                    onClick={() =>
+                      history.push(`/rental/${booking.rental._id}`)
+                    }
+                    scope='row'
+                    style={{ width: 80 }}>
+                    <img
+                      className={classes.image}
+                      src={booking.rental.image}
+                      alt='booking photograph'
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell component='th' scope='row' align='right'>
+                    {format(new Date(booking.startDate), 'dd MMMM yyyy')}
+                  </StyledTableCell>
+                  <StyledTableCell align='right'>
+                    {format(new Date(booking.endDate), 'dd MMMM yyyy')}
+                  </StyledTableCell>
+                  <StyledTableCell align='right'>
+                    $ {booking.totalPrice}
+                  </StyledTableCell>
+                  <StyledTableCell align='right'>
+                    {!placedByMe ? (
+                      moment().diff(moment(booking.endDate), 'days') > 1 ? (
                         <Button
                           variant='contained'
                           color='secondary'
-                          disabled={
-                            moment(booking.startDate).diff(moment(), 'days') <
-                              2 ||
-                            moment().diff(moment(booking.startDate), 'days') > 0
-                          }
                           onClick={() => openModalForBooking(booking._id)}>
-                          {moment(booking.startDate).diff(moment(), 'days') <
+                          Move to history
+                        </Button>
+                      ) : (
+                        <Typography variant='h3' style={{ color: 'white' }}>
+                          Active
+                        </Typography>
+                      )
+                    ) : (
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        disabled={
+                          moment(booking.startDate).diff(moment(), 'days') <
                             2 ||
                           moment().diff(moment(booking.startDate), 'days') > 0
-                            ? "Can't be removed"
-                            : 'Cancel & Refund'}
-                        </Button>
-                      )}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                </>
+                        }
+                        onClick={() => openModalForBooking(booking._id)}>
+                        {moment(booking.startDate).diff(moment(), 'days') < 2 ||
+                        moment().diff(moment(booking.startDate), 'days') > 0
+                          ? "Can't be removed"
+                          : 'Cancel & Refund'}
+                      </Button>
+                    )}
+                  </StyledTableCell>
+                </StyledTableRow>
               ))}
             </TableBody>
           </Table>
