@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import ReactGlobe from 'react-globe';
 
 import BaseLayout from '../../components/ui_layout/BaseLayout';
 import Slider from '@material-ui/core/Slider';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles, useTheme } from '@material-ui/styles';
 
 import RentalCard from './RentalCard';
 import { listAllRentals } from '../../redux/rentals_slice/rentalActions';
 import Loading from '../../components/ui_layout/Loading';
-import { Typography } from '@material-ui/core';
+import { Typography, useMediaQuery } from '@material-ui/core';
 import useRentalFilterHome from '../../hooks/useRentalFilterHome';
 import HomeCategoryFilter from '../../components/rentals/HomeCategoryFilter';
 
@@ -18,9 +19,31 @@ const useStyles = makeStyles(theme => ({
   globeContainer: {
     marginTop: '-4rem',
     marginBottom: '2rem',
+    [theme.breakpoints.down('sm')]: {
+      margin: 0,
+    },
   },
   globe: {
     height: '20vh',
+    [theme.breakpoints.down('sm')]: {
+      display: 'none',
+    },
+  },
+  filtersBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+    [theme.breakpoints.down('sm')]: {
+      alignItems: 'center',
+      width: '100%',
+      marginTop: '-1.5rem',
+    },
+  },
+  pricefilterTypography: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1rem',
+    },
   },
 }));
 const RentalsHome = () => {
@@ -28,6 +51,8 @@ const RentalsHome = () => {
   const dispatch = useDispatch();
   const { rentals: allRentals, loading } = useSelector(state => state.rentals);
   const { userId } = useSelector(state => state.userLogin);
+  const theme = useTheme();
+  const matchesSmallScreens = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [price, setPrice] = useState(0);
 
@@ -78,7 +103,7 @@ const RentalsHome = () => {
           <ReactGlobe style={{ height: '10vh' }} />
         </Grid>
       </Grid>
-      <Grid container spacing={8}>
+      <Grid container className={classes.filtersBox}>
         <Grid item lg={6} md={6} xs={6}>
           <HomeCategoryFilter
             toggleShowCategory={toggleShowCategory}
@@ -87,7 +112,9 @@ const RentalsHome = () => {
           />
         </Grid>
         <Grid item lg={4} md={4} xs={4}>
-          <Typography variant='h3'>Price Filter: $ {price}</Typography>
+          <Typography variant='h3' className={classes.pricefilterTypography}>
+            Price: $ {price}
+          </Typography>
           <Slider
             value={price || 100}
             onChange={handleSliderChange}
@@ -100,7 +127,7 @@ const RentalsHome = () => {
           homePageRentalsFilterSystem(allRentals).map((rental, index) => {
             const isOwner = userId === rental.owner._id;
             return (
-              <Grid item lg={3} md={3} xs={12} sm={6} key={index}>
+              <Grid item lg={3} md={3} sm={6} xs={6} key={index}>
                 <RentalCard rental={rental} isOwner={isOwner} />
               </Grid>
             );
