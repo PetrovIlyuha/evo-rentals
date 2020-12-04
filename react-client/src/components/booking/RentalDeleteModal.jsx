@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'react-responsive-modal/styles.css';
+import { firstUpperLetter } from '../../utils/stringFunctions';
+
 import { Modal } from 'react-responsive-modal';
 import {
   Box,
@@ -9,8 +11,12 @@ import {
   makeStyles,
   Typography,
 } from '@material-ui/core';
-import { format } from 'date-fns';
 import styles from './BookingDeleteModal.module.css';
+import {
+  deleteRentalById,
+  getBookingsById,
+} from '../../redux/rentals_slice/rentalActions';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -54,29 +60,33 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ConfirmationModal = ({
-  booking,
-  removeBooking,
-  openModal,
-  setOpenModal,
-  placedByMe,
-  moveBookingToHistory,
+const RentalDeleteModal = ({
+  rental,
+  openRentalDeleteModal,
+  setOpenRentalDeteleModal,
 }) => {
   const classes = useStyles();
-  const onCloseModal = () => setOpenModal(false);
+  const onCloseModal = () => setOpenRentalDeteleModal(false);
+  const { bookings } = useSelector(state => state.bookingsByRentalID);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getBookingsById(rental._id));
+  }, [dispatch, rental]);
   return (
     <Modal
-      open={openModal}
+      open={openRentalDeleteModal}
       onClose={onCloseModal}
       center
       className={styles.modal}
       style={{ background: 'rgba(0,0,0,0.1)' }}>
       <Grid container lg={12} md={12}>
         <Grid item lg={12} md={12}>
-          <Typography variant='h2'>Delete this booking position?</Typography>
+          <Typography variant='h2'>Want to remove your posting?</Typography>
           <Box margin={5}>
             <img
-              src={booking.rental.image}
+              src={rental.image}
               alt='modal home'
               className={classes.modalImageDecor}
             />
@@ -84,48 +94,50 @@ const ConfirmationModal = ({
         </Grid>
         <Grid container md={12}>
           <Grid item md={12}>
-            <Typography variant='h5'>
-              <strong>Date of arrival:</strong>{' '}
-              {format(new Date(booking.startDate), 'dd MMMM yyyy')}
+            <Typography variant='h4'>
+              Short Description: {rental.title}
             </Typography>
           </Grid>
           <Grid item md={12}>
-            <Typography variant='h5' md={12}>
-              <strong>Date of leave:</strong>{' '}
-              {format(new Date(booking.endDate), 'dd MMMM yyyy')}
+            <Typography variant='h4'>
+              Address: city - {firstUpperLetter(rental.city)}, street -{' '}
+              {firstUpperLetter(rental.street)}
             </Typography>
           </Grid>
-          <Grid item md={12}>
-            <Typography variant='h5' md={12}>
-              <strong>Amount to refund:</strong> $ {booking.totalPrice}
-            </Typography>
-          </Grid>
+          <Grid item md={12}></Grid>
         </Grid>
         <Divider />
-        <Grid item md={6}>
-          {placedByMe ? (
+        {bookings && (
+          <Grid item md={6}>
             <Button
               color='primary'
               variant='contained'
+              disabled={bookings.length > 0}
               className={classes.modalConfirmBtn}
-              onClick={() => removeBooking(booking._id)}
+              onClick={() => dispatch(deleteRentalById(rental._id))}
               type='submit'>
-              Delete and claim Refund
+              Delete Rental
             </Button>
-          ) : (
-            <Button
-              color='primary'
-              variant='contained'
-              className={classes.modalConfirmBtn}
-              onClick={() => moveBookingToHistory(booking._id)}
-              type='submit'>
-              Move to history
-            </Button>
-          )}
-        </Grid>
+            {bookings.length > 0 && (
+              <blockquote
+                style={{
+                  padding: 5,
+                  backgroundColor: '#714674',
+                  color: '#EDE342',
+                  fontSize: '1rem',
+                  width: '100%',
+                  boxShadow: '2px 2px 8px rgba(0,0,0,0.4)',
+                }}>
+                Your location have been booked by our customers. If you want to
+                settle down all legal issues with booking-holders, please
+                contact CUSTOMER SERVICE SUPPORT 8-888-118299
+              </blockquote>
+            )}
+          </Grid>
+        )}
       </Grid>
     </Modal>
   );
 };
 
-export default ConfirmationModal;
+export default RentalDeleteModal;

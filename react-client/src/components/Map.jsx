@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
 import tt from '@tomtom-international/web-sdk-maps';
 import '@tomtom-international/web-sdk-maps/dist/maps.css';
 
