@@ -13,6 +13,10 @@ const useStyles = makeStyles(theme => ({
       'radial-gradient(rgba(68, 76, 247, 0.15) 1px, transparent 1px), radial-gradient(rgba(68, 76, 247, 0.15) 1px, rgba(229, 229, 247, 0.3) 1px)',
     backgroundSize: '40px 40px',
     backgroundPosition: '0 0,20px 20px',
+    [theme.breakpoints.down('sm')]: {
+      paddingTop: '3rem',
+      marginTop: '-2rem',
+    },
   },
 }));
 

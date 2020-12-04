@@ -81,7 +81,7 @@ const RentalDeleteModal = ({
       center
       className={styles.modal}
       style={{ background: 'rgba(0,0,0,0.1)' }}>
-      <Grid container lg={12} md={12}>
+      <Grid container>
         <Grid item lg={12} md={12}>
           <Typography variant='h2'>Want to remove your posting?</Typography>
           <Box margin={5}>
@@ -92,7 +92,7 @@ const RentalDeleteModal = ({
             />
           </Box>
         </Grid>
-        <Grid container md={12}>
+        <Grid container>
           <Grid item md={12}>
             <Typography variant='h4'>
               Short Description: {rental.title}
