@@ -129,6 +129,7 @@ const RentalDetails = ({ match }) => {
 
   const isOwner = userId === rentalByID?.owner?._id;
   const ownerDetails = owner?.owner || null;
+
   let city, street, rentalLocation;
   if (rentalByID) {
     city = rentalByID.city;
@@ -147,7 +148,6 @@ const RentalDetails = ({ match }) => {
     }
   }, [success]);
 
-  // image tilt (visual sugar)
   useEffect(() => {
     const tiltedElement = tiltRef.current;
 
@@ -210,10 +210,12 @@ const RentalDetails = ({ match }) => {
             </Hidden>
           </Grid>
           <LocationInfo rentalByID={rentalByID} />
-          <OnwerDetailsSection
-            ownerDetails={ownerDetails}
-            rentalByID={rentalByID}
-          />
+          {ownerDetails && (
+            <OnwerDetailsSection
+              ownerDetails={ownerDetails}
+              rentalByID={rentalByID}
+            />
+          )}
           <Grid container justify='around' spacing={10}>
             <Grid
               item
