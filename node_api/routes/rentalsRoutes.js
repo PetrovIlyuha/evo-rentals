@@ -21,6 +21,6 @@ router.post('/rentals', authUserMiddleware, createRental);
 
 router.delete('/rentals/:id', authUserMiddleware, removeRentalById);
 
-router.patch('/rentals/:id', updateRentalById);
+router.patch('/rentals/:id', authUserMiddleware, updateRentalById);
 
 export default router;

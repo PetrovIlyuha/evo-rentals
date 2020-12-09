@@ -10,7 +10,7 @@ const RentalBookingsList = ({ bookings }) => {
           This location active bookings
         </Typography>
         <ExistingBookingsByLocation
-          style={{ width: '120%', minHeight: '350px' }}
+          style={{ width: '120%', minHeight: '150px' }}
           bookings={bookings}
         />
       </Grid>
