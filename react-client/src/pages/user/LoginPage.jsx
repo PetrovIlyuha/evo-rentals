@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import cogoToast from 'cogo-toast';
+import lottie from 'lottie-web';
+import loginAnimation from '../../assets/animations/LoginAnimation.json';
 
 import BaseLayout from '../../components/ui_layout/BaseLayout';
 import Loading from '../../components/ui_layout/Loading';
@@ -114,6 +116,7 @@ const InputField = withStyles({
   },
 })(TextField);
 
+let loginAnimated = null;
 const Login = ({ history }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -128,6 +131,16 @@ const Login = ({ history }) => {
       }, 2500);
     }
   }, [history, userId]);
+
+  useEffect(() => {
+    lottie.loadAnimation({
+      container: loginAnimated,
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      animationData: loginAnimation,
+    });
+  });
 
   if (loading) {
     return <Loading size='50px' loading={loading} />;
@@ -231,7 +244,10 @@ const Login = ({ history }) => {
         </Grid>
 
         <Grid item lg={6} md={12} className={classes.promoSectionRegister}>
-          <LoginImage />
+          {/* <LoginImage /> */}
+          <div
+            style={{ width: '100%', margin: '0 auto' }}
+            ref={ref => (loginAnimated = ref)}></div>
           <Divider />
           <Typography variant='h6' className={classes.promoText}>
             Being our registered user means a lot of unique experiences and
