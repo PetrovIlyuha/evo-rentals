@@ -65,11 +65,11 @@ const Account = ({ history }) => {
     <BaseLayout>
       <Grid container justify='center' align='center' spacing={3}>
         <Hidden smDown>
-          <Grid item spacing={2} md={8}>
+          <Grid item md={8}>
             <Typography variant='h2'>{username}'s Dashboard</Typography>
           </Grid>
         </Hidden>
-        <Grid item spacing={4} md={12}>
+        <Grid item md={12}>
           <Typography variant='h2' className={classes.headingAccount}>
             My Posted Rentals
           </Typography>
@@ -119,13 +119,13 @@ const Account = ({ history }) => {
         align='center'
         spacing={2}>
         {bookingsIncoming?.length > 0 && (
-          <Grid item spacing={2} md={12}>
+          <Grid item md={12}>
             <Typography variant='h2'>Bookings Received</Typography>
           </Grid>
         )}
         {bookingsIncoming?.length > 0 && (
           <>
-            <Grid item spacing={2} md={10}>
+            <Grid item md={10}>
               <Typography variant='h4' style={{ marginBottom: 10 }}>
                 Statistics Overview
               </Typography>
@@ -144,7 +144,7 @@ const Account = ({ history }) => {
       </Grid>
       {bookings?.length > 0 && (
         <Grid container justify='center' align='center' spacing={3}>
-          <Grid item spacing={4} md={12}>
+          <Grid item md={12}>
             <Typography variant='h2'>My Bookings</Typography>
           </Grid>
           <Grid item lg={10} md={10} xs={10} sm={10}>
