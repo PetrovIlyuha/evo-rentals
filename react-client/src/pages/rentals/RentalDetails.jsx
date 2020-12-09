@@ -53,6 +53,10 @@ const useStyles = makeStyles(theme => ({
   },
   rentalMapComponent: {
     margin: '-20px 0 40px 0',
+    [theme.breakpoints.down('sm')]: {
+      width: '100vw',
+      marginLeft: '5%',
+    },
   },
   bookrentalSection: {},
   location: {
@@ -210,12 +214,16 @@ const RentalDetails = ({ match }) => {
             </Hidden>
           </Grid>
           <LocationInfo rentalByID={rentalByID} />
-          {ownerDetails && (
-            <OnwerDetailsSection
-              ownerDetails={ownerDetails}
-              rentalByID={rentalByID}
-            />
-          )}
+          <Grid container>
+            <Grid item md={12}>
+              {ownerDetails && (
+                <OnwerDetailsSection
+                  ownerDetails={ownerDetails}
+                  rentalByID={rentalByID}
+                />
+              )}
+            </Grid>
+          </Grid>
           <Grid container justify='around' spacing={10}>
             <Grid
               item
