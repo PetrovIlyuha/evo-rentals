@@ -39,21 +39,21 @@ const StyledTableRow = withStyles(theme => ({
   },
 }))(TableRow);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   table: {
-    minWidth: 700,
-    minHeight: 300,
+    width: 700,
+    minHeight: 100,
     overflow: 'hidden',
-  },
-  image: {
-    width: '150%',
-    transition: '.3s all ease',
-    paddingRight: 20,
-    '&:hover': {
-      transform: 'scale(3.5)',
+    [theme.breakpoints.down('sm')]: {
+      width: 400,
+      marginLeft: 100,
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: 300,
+      margin: 0,
     },
   },
-});
+}));
 
 function ExistingBookingsByLocation({ bookings, history }) {
   const classes = useStyles();
@@ -69,8 +69,8 @@ function ExistingBookingsByLocation({ bookings, history }) {
         {showBookings ? 'Hide' : 'Show'}
       </Button>
       {showBookings && (
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label='customized table'>
+        <TableContainer component={Paper} className={classes.table}>
+          <Table aria-label='customized table'>
             <TableHead>
               <TableRow>
                 <StyledTableCell align='right'>Arrival Date</StyledTableCell>
