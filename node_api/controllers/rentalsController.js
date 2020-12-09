@@ -117,12 +117,5 @@ export const removeRentalById = async (req, res) => {
 };
 
 export const updateRentalById = async (req, res) => {
-  const { id } = req.params;
-  const { city, title } = req.body;
-  const rentalIndex = apartments.findIndex(rental => rental.id === id);
-  if (rentalIndex > -1) {
-    apartments[rentalIndex].title = title;
-    apartments[rentalIndex].city = city;
-  }
-  return res.json({ message: `Rental with ID ${id} was updated` });
+  const {} = req.body;
 };
